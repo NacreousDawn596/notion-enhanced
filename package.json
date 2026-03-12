@@ -14,7 +14,7 @@
     "start:desktop": "electron desktop.js",
     "build": "./scripts/build-browser-extension.sh",
     "vendor": "node ./scripts/vendor-dependencies.mjs",
-    "test": "node --test test/**/*.test.mjs",
+    "test": "node --test",
     "lint": "eslint \"src/**/*.mjs\" \"src/**/*.js\" \"scripts/**/*.mjs\"",
     "format": "prettier --write \"src/**/*.{js,mjs,css,json}\" \"scripts/**/*.{js,mjs}\""
   },
