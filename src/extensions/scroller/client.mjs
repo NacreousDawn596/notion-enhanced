@@ -5,19 +5,19 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { FloatingButton } from "../../core/islands/FloatingButton.mjs";
+import { FloatingButton } from '../../core/islands/FloatingButton.mjs';
 
 export default async (api, db) => {
   const { html, addFloatingButton, removeFloatingButton } = api,
     { addMutationListener, removeMutationListener } = api,
-    jumpToWeek = await db.get("jumpToWeek"),
+    jumpToWeek = await db.get('jumpToWeek'),
     todayButton = `.notion-collection_view_page-block [aria-label="Previous Month"] + [role="button"]`,
     todayBubble = `.notion-calendar-view-day[style*="background"]`,
-    showScrollToBottom = await db.get("showScrollToBottom"),
-    distanceUntilShown = await db.get("distanceUntilScrollToTopShown"),
-    scrollUnit = await db.get("scrollDistanceUnit"),
-    scrollBehavior = (await db.get("smoothScrolling")) ? "smooth" : "auto",
-    scroller = ".notion-frame .notion-scroller";
+    showScrollToBottom = await db.get('showScrollToBottom'),
+    distanceUntilShown = await db.get('distanceUntilScrollToTopShown'),
+    scrollUnit = await db.get('scrollDistanceUnit'),
+    scrollBehavior = (await db.get('smoothScrolling')) ? 'smooth' : 'auto',
+    scroller = '.notion-frame .notion-scroller';
 
   let $scroller, $today;
   const scrollTo = (top, behavior) => $scroller?.scroll({ top, behavior }),
@@ -35,7 +35,7 @@ export default async (api, db) => {
       if (!$scroller) return;
       const { scrollTop, scrollHeight, clientHeight } = $scroller;
       let scrollDist = scrollTop;
-      if (scrollUnit === "Percent") {
+      if (scrollUnit === 'Percent') {
         scrollDist = (scrollTop / (scrollHeight - clientHeight)) * 100;
         if (isNaN(scrollDist)) scrollDist = 0;
       }
@@ -54,7 +54,7 @@ export default async (api, db) => {
       // so ignore smooth scroll setting and jump direct to week
       const $bubble = document.querySelector(todayBubble);
       if (!$bubble) return;
-      scrollTo($bubble.offsetParent.offsetParent.offsetTop + 57, "auto");
+      scrollTo($bubble.offsetParent.offsetParent.offsetTop + 57, 'auto');
       removeMutationListener(onTodayLoaded);
     },
     onTodayClicked = () => {
@@ -68,14 +68,14 @@ export default async (api, db) => {
     setup = () => {
       if (!document.contains($scroller)) {
         $scroller = document.querySelector(scroller);
-        $scroller?.removeEventListener("scroll", onPageScrolled);
-        $scroller?.addEventListener("scroll", onPageScrolled);
+        $scroller?.removeEventListener('scroll', onPageScrolled);
+        $scroller?.addEventListener('scroll', onPageScrolled);
         onPageScrolled();
       }
       if (jumpToWeek && !document.contains($today)) {
         $today = document.querySelector(todayButton);
-        $today?.removeEventListener("click", onTodayClicked);
-        $today?.addEventListener("click", onTodayClicked);
+        $today?.removeEventListener('click', onTodayClicked);
+        $today?.addEventListener('click', onTodayClicked);
       }
     };
   addMutationListener(scroller, setup, { subtree: false });

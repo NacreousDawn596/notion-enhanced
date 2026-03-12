@@ -4,7 +4,7 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-"use strict";
+'use strict';
 
 const _isManifestValid = (modManifest) => {
   const { platform } = globalThis.__enhancerApi,
@@ -15,9 +15,9 @@ const _isManifestValid = (modManifest) => {
       modManifest.description &&
       modManifest.authors,
     meetsThemeRequirements =
-      !modManifest._src.startsWith("themes/") ||
-      ((modManifest.tags?.includes("dark") ||
-        modManifest.tags?.includes("light")) &&
+      !modManifest._src.startsWith('themes/') ||
+      ((modManifest.tags?.includes('dark') ||
+        modManifest.tags?.includes('light')) &&
         modManifest.thumbnail),
     targetsCurrentPlatform =
       !modManifest.platforms || //
@@ -40,25 +40,25 @@ const getMods = async (asyncFilter) => {
   },
   getProfile = async () => {
     const db = globalThis.__enhancerApi.initDatabase();
-    let activeProfile = await db.get("activeProfile");
-    activeProfile ??= (await db.get("profileIds"))?.[0];
-    return activeProfile ?? "default";
+    let activeProfile = await db.get('activeProfile');
+    activeProfile ??= (await db.get('profileIds'))?.[0];
+    return activeProfile ?? 'default';
   };
 
 const isEnabled = async (id) => {
     const { version, initDatabase } = globalThis.__enhancerApi,
       mod = (await getMods()).find((mod) => mod.id === id);
-    if (mod._src === "core") return true;
-    const agreedToTerms = await initDatabase().get("agreedToTerms"),
+    if (mod._src === 'core') return true;
+    const agreedToTerms = await initDatabase().get('agreedToTerms'),
       enabledInProfile = await initDatabase([
         await getProfile(),
-        "enabledMods",
+        'enabledMods',
       ]).get(id);
     return agreedToTerms === version && enabledInProfile;
   },
   setEnabled = async (id, enabled) => {
     return await globalThis.__enhancerApi
-      .initDatabase([await getProfile(), "enabledMods"])
+      .initDatabase([await getProfile(), 'enabledMods'])
       .set(id, enabled);
   };
 
@@ -71,7 +71,7 @@ const modDatabase = async (id) => {
       value ??= opt.values?.[0];
       return [opt.key, value];
     })
-    ?.filter?.(([, value]) => typeof value !== "undefined");
+    ?.filter?.(([, value]) => typeof value !== 'undefined');
   return globalThis.__enhancerApi.initDatabase(
     [await getProfile(), id],
     Object.fromEntries(optionDefaults ?? [])

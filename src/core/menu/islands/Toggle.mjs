@@ -15,7 +15,7 @@ function Toggle({ _get, _set, _requireReload = true, ...props }) {
       ...${props}
     />`;
   extendProps($input, { onchange: () => _set?.($input.checked) });
-  useState(["rerender"], async () => {
+  useState(['rerender'], async () => {
     const checked = (await _get?.()) ?? $input.checked;
     $input.checked = checked;
     if (_requireReload) {
@@ -31,7 +31,7 @@ function Toggle({ _get, _set, _requireReload = true, ...props }) {
       class="w-[30px] h-[18px] rounded-[44px] cursor-pointer
       transition duration-200 bg-[color:var(--theme--bg-hover)]"
       onkeydown=${(event) => {
-        if ([" ", "Enter"].includes(event.key)) {
+        if ([' ', 'Enter'].includes(event.key)) {
           event.preventDefault();
           $input.click();
         }

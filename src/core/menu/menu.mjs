@@ -4,17 +4,17 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { checkForUpdate, isDevelopmentBuild } from "../updateCheck.mjs";
-import { Sidebar } from "./islands/Sidebar.mjs";
-import { Footer } from "./islands/Footer.mjs";
-import { Banner } from "./islands/Banner.mjs";
-import { Onboarding } from "./islands/Onboarding.mjs";
-import { View } from "./islands/View.mjs";
-import { List } from "./islands/List.mjs";
-import { Mod } from "./islands/Mod.mjs";
-import { Options } from "./islands/Options.mjs";
-import { Profiles } from "./islands/Profiles.mjs";
-import { Description } from "./islands/Description.mjs";
+import { checkForUpdate, isDevelopmentBuild } from '../updateCheck.mjs';
+import { Sidebar } from './islands/Sidebar.mjs';
+import { Footer } from './islands/Footer.mjs';
+import { Banner } from './islands/Banner.mjs';
+import { Onboarding } from './islands/Onboarding.mjs';
+import { View } from './islands/View.mjs';
+import { List } from './islands/List.mjs';
+import { Mod } from './islands/Mod.mjs';
+import { Options } from './islands/Options.mjs';
+import { Profiles } from './islands/Profiles.mjs';
+import { Description } from './islands/Description.mjs';
 
 let _apiImport, //
   _renderStarted,
@@ -22,18 +22,18 @@ let _apiImport, //
   _hotkeyRegistered;
 const categories = [
     {
-      icon: "palette",
-      id: "themes",
-      title: "Themes",
+      icon: 'palette',
+      id: 'themes',
+      title: 'Themes',
       description: `Themes override Notion's colour schemes. Dark themes require
         Notion to be in dark mode and light themes require Notion to be in light
         mode. To switch between dark mode and light mode, go to <mark>Settings &
         members → My notifications & settings → My settings → Appearance</mark>.`,
     },
     {
-      icon: "zap",
-      id: "extensions",
-      title: "Extensions",
+      icon: 'zap',
+      id: 'extensions',
+      title: 'Extensions',
       description: `Extensions add to the functionality and layout of the Notion
         client, interacting with and modifying existing interfaces.`,
     },
@@ -47,37 +47,37 @@ const categories = [
     // },
   ],
   sidebar = [
-    "notion-enhancer",
+    'notion-enhancer',
     {
-      id: "welcome",
-      title: "Welcome",
-      icon: "notion-enhancer",
+      id: 'welcome',
+      title: 'Welcome',
+      icon: 'notion-enhancer',
     },
     {
-      icon: "message-circle",
-      title: "Community",
-      href: "https://discord.gg/sFWPXtA",
+      icon: 'message-circle',
+      title: 'Community',
+      href: 'https://discord.gg/sFWPXtA',
     },
     {
-      icon: "clock",
-      title: "Changelog",
-      href: "https://notion-enhancer.github.io/about/changelog/",
+      icon: 'clock',
+      title: 'Changelog',
+      href: 'https://notion-enhancer.github.io/about/changelog/',
     },
     {
-      icon: "book",
-      title: "Documentation",
-      href: "https://notion-enhancer.github.io/",
+      icon: 'book',
+      title: 'Documentation',
+      href: 'https://notion-enhancer.github.io/',
     },
     {
-      icon: "github",
-      title: "Source Code",
-      href: "https://github.com/notion-enhancer",
+      icon: 'github',
+      title: 'Source Code',
+      href: 'https://github.com/notion-enhancer',
     },
-    "Settings",
+    'Settings',
     {
-      id: "core",
-      title: "Core",
-      icon: "sliders-horizontal",
+      id: 'core',
+      title: 'Core',
+      icon: 'sliders-horizontal',
       disableUntilAgreedToTerms: true,
     },
     ...categories.map((c) => ({
@@ -91,9 +91,9 @@ const categories = [
 const renderMenu = async () => {
     const { html, setState, useState } = globalThis.__enhancerApi,
       { getMods, isEnabled, setEnabled } = globalThis.__enhancerApi,
-      [theme, icon] = useState(["theme", "icon"]);
+      [theme, icon] = useState(['theme', 'icon']);
     if (!theme || !icon || _renderStarted) return;
-    if (icon === "Monochrome") sidebar[1].icon += "?mask";
+    if (icon === 'Monochrome') sidebar[1].icon += '?mask';
     _renderStarted = true;
 
     const mods = await getMods();
@@ -105,8 +105,8 @@ const renderMenu = async () => {
       <//>`;
     }
     for (let i = 0; i < mods.length; i++) {
-      const options = mods[i].options?.filter((opt) => opt.type !== "heading");
-      if (mods[i]._src === "core" || !options?.length) continue;
+      const options = mods[i].options?.filter((opt) => opt.type !== 'heading');
+      if (mods[i]._src === 'core' || !options?.length) continue;
       const _get = () => isEnabled(mods[i].id),
         _set = async (enabled) => {
           await setEnabled(mods[i].id, enabled);
@@ -142,9 +142,10 @@ const renderMenu = async () => {
                   border border-[color:var(--theme--fg-red)]
                   bg-[color:var(--theme--dim-red)] typography"
                 >
-                  Hi there! Before you go any further, <b>please note that this update is
-                  not feature complete.</b> As part of an internal overhaul and the Chrome
-                  extension's upgrade to manifest v3, all themes and extensions must be
+                  Hi there! Before you go any further,
+                  <b>please note that this update is not feature complete.</b>
+                  As part of an internal overhaul and the Chrome extension's
+                  upgrade to manifest v3, all themes and extensions must be
                   ported manually across to the new version.
                   <br />
                   <br />
@@ -176,12 +177,13 @@ const renderMenu = async () => {
                     <li>playful purple</li>
                   </ul>
                   <br />
-                  In the meantime, the styling for these themes can be
-                  found <a href="https://github.com/notion-enhancer/repo"
-                  >here</a> and
-                  copy/pasted into your custom styles alongside the <a
+                  In the meantime, the styling for these themes can be found
+                  <a href="https://github.com/notion-enhancer/repo">here</a> and
+                  copy/pasted into your custom styles alongside the
+                  <a
                     href="https://github.com/notion-enhancer/repo/blob/dev/theming/theme.css"
-                    >old theming system</a>, if you wish.
+                    >old theming system</a
+                  >, if you wish.
                   <br />
                   <br />
                   The following extensions have been deprecated as their feature
@@ -206,7 +208,7 @@ const renderMenu = async () => {
                 </div>
               <//>
               <${View} id="core">
-                <${Options} mod=${mods.find(({ _src }) => _src === "core")} />
+                <${Options} mod=${mods.find(({ _src }) => _src === 'core')} />
                 <${Profiles} />
               <//>
               ${[...categories, ...mods]
@@ -217,11 +219,11 @@ const renderMenu = async () => {
           <${Footer} categories=${categories} />
         </main>
       `;
-    useState(["footerOpen"], ([footerOpen]) => {
-      $main.style.height = footerOpen ? "100%" : "calc(100% + 65px)";
+    useState(['footerOpen'], ([footerOpen]) => {
+      $main.style.height = footerOpen ? '100%' : 'calc(100% + 65px)';
     });
 
-    const $skeleton = document.querySelector("#skeleton");
+    const $skeleton = document.querySelector('#skeleton');
     $skeleton.replaceWith($sidebar, $main);
   },
   registerHotkey = ([hotkey]) => {
@@ -230,48 +232,48 @@ const renderMenu = async () => {
     _hotkeyRegistered = true;
     addKeyListener(hotkey, (event) => {
       event.preventDefault();
-      const msg = { channel: "notion-enhancer", action: "open-menu" };
-      parent?.postMessage(msg, "*");
+      const msg = { channel: 'notion-enhancer', action: 'open-menu' };
+      parent?.postMessage(msg, '*');
     });
-    addKeyListener("Escape", () => {
-      const [popupOpen] = useState(["popupOpen"]);
-      if (document.activeElement?.tagName === "INPUT") {
+    addKeyListener('Escape', () => {
+      const [popupOpen] = useState(['popupOpen']);
+      if (document.activeElement?.tagName === 'INPUT') {
         document.activeElement.blur();
       } else if (!popupOpen) {
-        const msg = { channel: "notion-enhancer", action: "close-menu" };
-        parent?.postMessage(msg, "*");
+        const msg = { channel: 'notion-enhancer', action: 'close-menu' };
+        parent?.postMessage(msg, '*');
       } else setState({ rerender: true });
     });
   },
   updateTheme = ([theme]) => {
-    if (theme === "dark") document.body.classList.add("dark");
-    if (theme === "light") document.body.classList.remove("dark");
+    if (theme === 'dark') document.body.classList.add('dark');
+    if (theme === 'light') document.body.classList.remove('dark');
   };
 
 const importApi = () => {
     return (_apiImport ??= (async () => {
       const api = globalThis.__enhancerApi;
-      if (typeof api === "undefined") await import("../../api/system.js");
-      await import("../../load.mjs").then((i) => i.default);
+      if (typeof api === 'undefined') await import('../../api/system.js');
+      await import('../../load.mjs').then((i) => i.default);
     })());
   },
   hookIntoState = () => {
     if (_stateHookedInto) return;
     _stateHookedInto = true;
     const { useState } = globalThis.__enhancerApi;
-    useState(["theme"], updateTheme);
-    useState(["hotkey"], registerHotkey);
-    useState(["rerender"], renderMenu);
+    useState(['theme'], updateTheme);
+    useState(['hotkey'], registerHotkey);
+    useState(['rerender'], renderMenu);
   };
 
-addEventListener("message", async (event) => {
-  if (event.data?.channel !== "notion-enhancer") return;
+addEventListener('message', async (event) => {
+  if (event.data?.channel !== 'notion-enhancer') return;
   await importApi().then(hookIntoState);
   const { setState, useState } = globalThis.__enhancerApi;
   setState({
     rerender: true,
-    hotkey: event.data?.hotkey ?? useState(["hotkey"])[0],
-    theme: event.data?.theme ?? useState(["theme"])[0],
-    icon: event.data?.icon ?? useState(["icon"])[0],
+    hotkey: event.data?.hotkey ?? useState(['hotkey'])[0],
+    theme: event.data?.theme ?? useState(['theme'])[0],
+    icon: event.data?.icon ?? useState(['icon'])[0],
   });
 });

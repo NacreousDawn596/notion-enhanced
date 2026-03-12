@@ -7,9 +7,9 @@
 
 /* indent rtl toc header levels,
  * https://github.com/notion-enhancer/notion-enhancer/issues/616 */
-.notion-table_of_contents-block div[style*="margin-left: 24px"] {
+.notion-table_of_contents-block div[style*='margin-left: 24px'] {
   margin-inline-start: 24px;
 }
-.notion-table_of_contents-block div[style*="margin-left: 48px"] {
+.notion-table_of_contents-block div[style*='margin-left: 48px'] {
   margin-inline-start: 48px;
 }

@@ -10,17 +10,17 @@ const injectTriggerOnce = (file, content) =>
     content +
     (!/require\(['|"]notion-enhancer['|"]\)/.test(content)
       ? `\n\nrequire("notion-enhancer")("${file}",exports,(js)=>eval(js));`
-      : ""),
-  replaceIfNotFound = ({ string, mode = "replace" }, search, replacement) =>
+      : ''),
+  replaceIfNotFound = ({ string, mode = 'replace' }, search, replacement) =>
     string.includes(replacement)
       ? string
       : string.replace(
           search,
-          typeof replacement === "string" && mode === "append"
+          typeof replacement === 'string' && mode === 'append'
             ? `$&${replacement}`
-            : typeof replacement === "string" && mode === "prepend"
-            ? `${replacement}$&`
-            : replacement
+            : typeof replacement === 'string' && mode === 'prepend'
+              ? `${replacement}$&`
+              : replacement
         );
 
 const patches = {
@@ -62,8 +62,8 @@ const patches = {
 
     return content;
   },
-  ".webpack/renderer/tabs/preload.js": injectTriggerOnce,
-  ".webpack/renderer/tab_browser_view/preload.js": injectTriggerOnce,
+  '.webpack/renderer/tabs/preload.js': injectTriggerOnce,
+  '.webpack/renderer/tab_browser_view/preload.js': injectTriggerOnce,
 };
 
 const decoder = new TextDecoder(),

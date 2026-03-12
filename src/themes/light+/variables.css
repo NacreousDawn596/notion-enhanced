@@ -11,11 +11,20 @@
     --light_plus--accent_blue-selection,
     rgb(46, 170, 220, 0.25)
   );
-  --theme--accent_blue-hover: var(--light_plus--accent_blue-hover, rgb(6, 156, 205));
-  --theme--accent_blue-active: var(--light_plus--accent_blue-active, rgb(0, 141, 190));
+  --theme--accent_blue-hover: var(
+    --light_plus--accent_blue-hover,
+    rgb(6, 156, 205)
+  );
+  --theme--accent_blue-active: var(
+    --light_plus--accent_blue-active,
+    rgb(0, 141, 190)
+  );
   --theme--accent_blue-text: var(--light_plus--accent_blue-text, #fff);
   --theme--accent_red: var(--light_plus--accent_red, #eb5757);
-  --theme--accent_red-button: var(--light_plus--accent_red-button, rgba(235, 87, 87, 0.1));
+  --theme--accent_red-button: var(
+    --light_plus--accent_red-button,
+    rgba(235, 87, 87, 0.1)
+  );
   --theme--accent_red-text: var(--light_plus--accent_red-text, #fff);
 
   --theme--scrollbar_thumb-hover: var(--light_plus--accent_highlight, #aeaca6);
@@ -26,10 +35,16 @@
   --theme--ui_corner_action-active: var(--theme--ui_interactive-active);
 
   --theme--icon: var(--light_plus--accent_highlight, rgba(55, 53, 47, 0.8));
-  --theme--icon_secondary: var(--light_plus--accent_highlight, rgba(55, 53, 47, 0.4));
+  --theme--icon_secondary: var(
+    --light_plus--accent_highlight,
+    rgba(55, 53, 47, 0.4)
+  );
 
   --theme--text: var(--light_plus--accent_highlight, rgb(55, 43, 47));
-  --theme--text_secondary: var(--light_plus--accent_highlight-shaded, rgba(55, 43, 47, 0.6));
+  --theme--text_secondary: var(
+    --light_plus--accent_highlight-shaded,
+    rgba(55, 43, 47, 0.6)
+  );
 
   --theme--text_gray: rgba(151, 154, 155, 0.95);
   --theme--text_brown: rgb(167, 126, 100);
@@ -101,7 +116,7 @@
   --theme--tag_red: rgb(248, 215, 218);
   --theme--tag_red-text: rgb(138, 0, 10);
 
-  --theme--board_light_gray: #EBEBED;
+  --theme--board_light_gray: #ebebed;
   --theme--board_light_gray-text: #616366;
   --theme--board_light_gray-card: var(--theme--tag_light_gray);
   --theme--board_gray: #e2e3e5;

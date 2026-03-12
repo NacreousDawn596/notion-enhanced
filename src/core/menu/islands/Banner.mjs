@@ -4,19 +4,19 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Popup } from "./Popup.mjs";
-import { Button } from "./Button.mjs";
-import { Description } from "./Description.mjs";
+import { Popup } from './Popup.mjs';
+import { Button } from './Button.mjs';
+import { Description } from './Description.mjs';
 
 const updateGuide =
-    "https://notion-enhancer.github.io/getting-started/updating/",
-  tsAndCs = "https://notion-enhancer.github.io/about/terms-and-conditions/";
+    'https://notion-enhancer.github.io/getting-started/updating/',
+  tsAndCs = 'https://notion-enhancer.github.io/about/terms-and-conditions/';
 
 const rectToStyle = (rect) =>
-  ["width", "height", "top", "bottom", "left", "right"]
+  ['width', 'height', 'top', 'bottom', 'left', 'right']
     .filter((prop) => rect[prop])
     .map((prop) => `${prop}: ${rect[prop]};`)
-    .join("");
+    .join('');
 
 function Star({ from, ...rect }) {
   const { html } = globalThis.__enhancerApi;
@@ -24,7 +24,7 @@ function Star({ from, ...rect }) {
     viewBox="0 0 24 24"
     class="absolute fill-none skew-y-2${from
       ? ` hidden ${from}:inline-block`
-      : ""}"
+      : ''}"
     xmlns="http://www.w3.org/2000/svg"
     style=${rectToStyle(rect)}
   >
@@ -79,7 +79,7 @@ function Banner({ updateAvailable, isDevelopmentBuild }) {
       <div
         class="notion-enhancer--menu-update-indicator
         absolute size-[12px] right-[-6px] top-[-6px]
-        ${updateAvailable ? "" : "hidden"}"
+        ${updateAvailable ? '' : 'hidden'}"
       >
         <span
           class="block rounded-full h-full w-full
@@ -98,14 +98,14 @@ function Banner({ updateAvailable, isDevelopmentBuild }) {
         innerHTML=${updateAvailable
           ? `<b>v${updateAvailable}</b> is available! <a href="${updateGuide}">Update now.</a>`
           : isDevelopmentBuild
-          ? "This is a development build of the notion-enhancer. It may be unstable."
-          : "You're up to date!"}
+            ? 'This is a development build of the notion-enhancer. It may be unstable.'
+            : "You're up to date!"}
       />
     <//>`;
   $version.append($popup);
   if (updateAvailable) {
-    useState(["focus", "view"], ([, view = "welcome"]) => {
-      if (view !== "welcome") return;
+    useState(['focus', 'view'], ([, view = 'welcome']) => {
+      if (view !== 'welcome') return;
       // delayed appearance = movement attracts eye
       setTimeout(() => $popup.open(), 400);
     });
@@ -176,12 +176,12 @@ function Banner({ updateAvailable, isDevelopmentBuild }) {
       <//>
     </div>`;
   initDatabase()
-    .get("agreedToTerms")
+    .get('agreedToTerms')
     .then((agreedToTerms) => {
       // only show sponsorship if already agree to terms
       // and opening menu after having reloaded since agreeing
-      $welcome.style.borderRadius = agreedToTerms === version ? "" : "4px";
-      $sponsorship.style.display = agreedToTerms === version ? "" : "none";
+      $welcome.style.borderRadius = agreedToTerms === version ? '' : '4px';
+      $sponsorship.style.display = agreedToTerms === version ? '' : 'none';
     });
 
   return html`<section class="notion-enhancer--menu-banner">

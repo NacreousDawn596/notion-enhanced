@@ -35,19 +35,19 @@ function Modal(props, ...children) {
       // does initially open
       await new Promise(requestAnimationFrame);
     }
-    $modal.setAttribute("open", "");
+    $modal.setAttribute('open', '');
     setTimeout(() => $modal.onopen?.(), 200);
   };
   $modal.close = () => {
     _openQueued = false;
-    $modal.removeAttribute("open");
+    $modal.removeAttribute('open');
     if ($modal.contains(document.activeElement)) {
       document.activeElement.blur();
     }
     setTimeout(() => $modal.onclose?.(), 200);
   };
-  addKeyListener("Escape", () => {
-    if (document.activeElement?.nodeName === "INPUT") return;
+  addKeyListener('Escape', () => {
+    if (document.activeElement?.nodeName === 'INPUT') return;
     $modal.close();
   });
   return $modal;

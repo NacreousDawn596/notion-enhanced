@@ -4,7 +4,7 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Button } from "./Button.mjs";
+import { Button } from './Button.mjs';
 
 function Footer({ categories, transitionDuration = 150 }) {
   const { html, setState, useState, reloadApp } = globalThis.__enhancerApi,
@@ -21,29 +21,29 @@ function Footer({ categories, transitionDuration = 150 }) {
         mods.map((mod) => mod.id),
         html`<${Button}
           icon="chevron-left"
-          onclick=${() => setState({ transition: "slide-to-left", view: id })}
+          onclick=${() => setState({ transition: 'slide-to-left', view: id })}
           >${title}
         <//>`,
       ];
     });
 
-  useState(["view"], ([view]) => {
-    let [footerOpen] = useState(["databaseUpdated"]);
+  useState(['view'], ([view]) => {
+    let [footerOpen] = useState(['databaseUpdated']);
     footerOpen ||= $categories.some(([ids]) => ids.some((id) => id === view));
     setState({ footerOpen });
   });
-  useState(["databaseUpdated"], ([databaseUpdated]) => {
-    $reload.style.display = databaseUpdated ? "" : "none";
+  useState(['databaseUpdated'], ([databaseUpdated]) => {
+    $reload.style.display = databaseUpdated ? '' : 'none';
     if (databaseUpdated) setState({ footerOpen: true });
   });
-  useState(["footerOpen"], ([footerOpen]) => {
+  useState(['footerOpen'], ([footerOpen]) => {
     // only toggle buttons if footer is open,
     // otherwise leave as is during transition
     if (!footerOpen) return;
-    const [view] = useState(["view"]);
+    const [view] = useState(['view']);
     for (const [ids, $btn] of $categories) {
       const viewInCategory = ids.some((id) => id === view);
-      $btn.style.display = viewInCategory ? "" : "none";
+      $btn.style.display = viewInCategory ? '' : 'none';
     }
   });
 

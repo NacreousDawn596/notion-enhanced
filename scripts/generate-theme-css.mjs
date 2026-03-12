@@ -14,11 +14,11 @@
 
 // todo: svg page & property icons
 
-const darkMode = document.body.classList.contains("dark"),
-  modeSelector = darkMode ? ".dark" : ":not(.dark)",
+const darkMode = document.body.classList.contains('dark'),
+  modeSelector = darkMode ? '.dark' : ':not(.dark)',
   bodySelector = `.notion-body${modeSelector}`;
-let cssRoot = "",
-  cssBody = "",
+let cssRoot = '',
+  cssBody = '',
   cssRefs = {};
 
 const getComputedPropertyValue = (el, prop) => {
@@ -27,14 +27,14 @@ const getComputedPropertyValue = (el, prop) => {
     return value;
   },
   cssVariable = ({ name, value, alias, splitValues = false }) => {
-    const values = splitValues ? value.split(", ") : [value],
+    const values = splitValues ? value.split(', ') : [value],
       rgbPattern = /^rgba?\(\d{1,3},\d{1,3},\d{1,3}(?:,\d{1,3})?\)$/,
-      isColor = rgbPattern.test(value.replace(/\s/g, ""));
+      isColor = rgbPattern.test(value.replace(/\s/g, ''));
     if (isColor) {
-      values[0] = values[0].replace(/\s/g, "");
+      values[0] = values[0].replace(/\s/g, '');
       const hasOpaqueAlpha =
-        values[0].trim().startsWith("rgba(") &&
-        values[0].trim().endsWith(",1)");
+        values[0].trim().startsWith('rgba(') &&
+        values[0].trim().endsWith(',1)');
       if (hasOpaqueAlpha) values[0] = `rgb(${values[0].slice(5, -3)})`;
     }
     if (!cssRoot.includes(`--theme--${name}:`)) {
@@ -46,31 +46,31 @@ const getComputedPropertyValue = (el, prop) => {
       name,
       value,
       ref: `var(--theme--${name},${values[0]})${
-        values.length > 1 ? ", " : ""
-      }${values.slice(1).join(", ")} !important`,
+        values.length > 1 ? ', ' : ''
+      }${values.slice(1).join(', ')} !important`,
     };
   },
   overrideStyle = ({
     element,
-    selector = "",
+    selector = '',
     property,
     variable,
     variableAliases = {},
     valueAliases = [],
-    specificity = ["mode", "value"],
+    specificity = ['mode', 'value'],
     cssProps = {},
     postProcessor = (selector, cssProps) => [selector, cssProps],
   }) => {
     if (selector) element ??= document.querySelector(selector);
-    const style = element?.getAttribute("style") ?? "",
+    const style = element?.getAttribute('style') ?? '',
       pattern = String.raw`(?:^|(?:;\s*))${property}:\s*([^;]+);?`,
       match = style.match(new RegExp(pattern));
-    if (typeof variable === "string") {
+    if (typeof variable === 'string') {
       let value = match?.[1];
       if (element) {
         value ??= getComputedPropertyValue(
           element,
-          property === "background" ? "background-color" : property
+          property === 'background' ? 'background-color' : property
         );
       }
       if (!value) throw new Error(`${property} not found for ${selector}`);
@@ -78,18 +78,18 @@ const getComputedPropertyValue = (el, prop) => {
         name: variable,
         value: value,
         alias: variableAliases[value],
-        splitValues: property === "font-family",
+        splitValues: property === 'font-family',
       });
     }
-    if (specificity.includes("value")) {
-      if (/(?<!rgb\()[^\s\d,]+,/g.test(selector) && !selector.includes(":is")) {
+    if (specificity.includes('value')) {
+      if (/(?<!rgb\()[^\s\d,]+,/g.test(selector) && !selector.includes(':is')) {
         selector = `:is(${selector})`;
       }
       if (match?.[0]) selector += `[style*="${match[0].replace(/"/g, `\\"`)}"]`;
       else {
         const propSelector = [variable.value, ...valueAliases]
           .map((value) =>
-            property === "color"
+            property === 'color'
               ? `[style^="color: ${value}"],
                  [style^="color:${value}"],
                  [style*=";color: ${value}"],
@@ -98,8 +98,8 @@ const getComputedPropertyValue = (el, prop) => {
                  [style*=" color:${value}"],
                  [style*="fill: ${value}"],
                  [style*="fill:${value}"]`
-              : property === "background"
-              ? `[style^="background: ${value}"],
+              : property === 'background'
+                ? `[style^="background: ${value}"],
                  [style^="background:${value}"],
                  [style*=";background: ${value}"],
                  [style*=";background:${value}"],
@@ -107,26 +107,26 @@ const getComputedPropertyValue = (el, prop) => {
                  [style*=" background:${value}"],
                  [style*="background-color: ${value}"],
                  [style*="background-color:${value}"]`
-              : `[style*="${property}: ${value}"],
+                : `[style*="${property}: ${value}"],
                  [style*="${property}:${value}"]`
           )
-          .join(",");
+          .join(',');
         selector += selector ? `:is(${propSelector})` : propSelector;
       }
     }
-    if (specificity.includes("mode")) {
+    if (specificity.includes('mode')) {
       selector =
-        /(?<!rgb\()[^\s\d,]+,/g.test(selector) && !selector.includes(":is")
+        /(?<!rgb\()[^\s\d,]+,/g.test(selector) && !selector.includes(':is')
           ? `${bodySelector} :is(${selector})`
           : `${bodySelector} ${selector}`;
     }
     cssProps[property] = variable;
-    cssProps["fill"] ??= cssProps["color"];
+    cssProps['fill'] ??= cssProps['color'];
     [selector, cssProps] = postProcessor(selector, cssProps);
     const body = Object.entries(cssProps)
       .filter(([prop, val]) => prop && val)
       .map(([prop, val]) => `${prop}:${val?.ref ?? val}`)
-      .join(";");
+      .join(';');
     cssRefs[body] ??= [];
     cssRefs[body].push(selector);
     variableAliases[variable.value] ??= variable.name;
@@ -134,69 +134,69 @@ const getComputedPropertyValue = (el, prop) => {
 
 const styleText = () => {
   const primary = cssVariable({
-      name: "fg-primary",
-      value: darkMode ? "rgba(255, 255, 255, 0.81)" : "rgb(55, 53, 47)",
+      name: 'fg-primary',
+      value: darkMode ? 'rgba(255, 255, 255, 0.81)' : 'rgb(55, 53, 47)',
     }),
     primaryAliases = darkMode
       ? [
-          "rgb(211, 211, 211)",
-          "rgb(255, 255, 255)",
-          "rgba(255, 255, 255, 0.8",
-          "rgba(255, 255, 255, 0.9",
-          "rgba(255, 255, 255, 1",
+          'rgb(211, 211, 211)',
+          'rgb(255, 255, 255)',
+          'rgba(255, 255, 255, 0.8',
+          'rgba(255, 255, 255, 0.9',
+          'rgba(255, 255, 255, 1',
         ]
       : [
-          "rgba(255, 255, 255, 0.9)",
-          "rgba(55, 53, 47, 0.8",
-          "rgba(55, 53, 47, 0.9",
-          "rgba(55, 53, 47, 1",
+          'rgba(255, 255, 255, 0.9)',
+          'rgba(55, 53, 47, 0.8',
+          'rgba(55, 53, 47, 0.9',
+          'rgba(55, 53, 47, 1',
         ];
 
   const secondary = cssVariable({
-      name: "fg-secondary",
-      value: darkMode ? "rgb(155, 155, 155)" : "rgba(25, 23, 17, 0.6)",
+      name: 'fg-secondary',
+      value: darkMode ? 'rgb(155, 155, 155)' : 'rgba(25, 23, 17, 0.6)',
     }),
     secondaryAliases = darkMode
       ? [
-          "rgb(127, 127, 127)",
-          "rgba(255, 255, 255, 0.0",
-          "rgba(255, 255, 255, 0.1",
-          "rgba(255, 255, 255, 0.2",
-          "rgba(255, 255, 255, 0.3",
-          "rgba(255, 255, 255, 0.4",
-          "rgba(255, 255, 255, 0.5",
-          "rgba(255, 255, 255, 0.6",
-          "rgba(255, 255, 255, 0.7",
+          'rgb(127, 127, 127)',
+          'rgba(255, 255, 255, 0.0',
+          'rgba(255, 255, 255, 0.1',
+          'rgba(255, 255, 255, 0.2',
+          'rgba(255, 255, 255, 0.3',
+          'rgba(255, 255, 255, 0.4',
+          'rgba(255, 255, 255, 0.5',
+          'rgba(255, 255, 255, 0.6',
+          'rgba(255, 255, 255, 0.7',
         ]
       : [
-          "rgba(206, 205, 202, 0.6)",
-          "rgba(55, 53, 47, 0.0",
-          "rgba(55, 53, 47, 0.1",
-          "rgba(55, 53, 47, 0.2",
-          "rgba(55, 53, 47, 0.3",
-          "rgba(55, 53, 47, 0.4",
-          "rgba(55, 53, 47, 0.5",
-          "rgba(55, 53, 47, 0.6",
-          "rgba(55, 53, 47, 0.7",
+          'rgba(206, 205, 202, 0.6)',
+          'rgba(55, 53, 47, 0.0',
+          'rgba(55, 53, 47, 0.1',
+          'rgba(55, 53, 47, 0.2',
+          'rgba(55, 53, 47, 0.3',
+          'rgba(55, 53, 47, 0.4',
+          'rgba(55, 53, 47, 0.5',
+          'rgba(55, 53, 47, 0.6',
+          'rgba(55, 53, 47, 0.7',
         ];
 
   overrideStyle({
-    property: "color",
+    property: 'color',
     variable: primary,
     valueAliases: primaryAliases,
     cssProps: {
-      "caret-color": primary,
-      "text-decoration-color": "currentColor",
+      'caret-color': primary,
+      'text-decoration-color': 'currentColor',
       fill: primary,
     },
   });
   overrideStyle({
-    property: "color",
+    property: 'color',
     variable: secondary,
     valueAliases: secondaryAliases,
     cssProps: {
-      "caret-color": secondary,
-      "text-decoration-color": "currentColor",
+      'caret-color': secondary,
+      'text-decoration-color': 'currentColor',
       fill: secondary,
     },
     postProcessor(selector, cssProps) {
@@ -208,20 +208,20 @@ const styleText = () => {
     },
   });
   overrideStyle({
-    property: "caret-color",
+    property: 'caret-color',
     variable: primary,
     valueAliases: primaryAliases,
   });
   overrideStyle({
-    property: "caret-color",
+    property: 'caret-color',
     variable: secondary,
     valueAliases: secondaryAliases,
   });
   overrideStyle({
     selector: `[style*="-webkit-text-fill-color:"]`,
-    property: "-webkit-text-fill-color",
+    property: '-webkit-text-fill-color',
     variable: secondary,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
 
   // light mode tags have coloured text,
@@ -236,8 +236,8 @@ const styleText = () => {
       overrideStyle({
         element: el,
         selector: tagSelector,
-        property: "color",
-        variable: "fg-primary",
+        property: 'color',
+        variable: 'fg-primary',
       });
     }
   }
@@ -245,26 +245,26 @@ const styleText = () => {
 
 const styleBorders = () => {
   const border = cssVariable({
-      name: "fg-border",
-      value: darkMode ? "rgb(47, 47, 47)" : "rgb(233, 233, 231)",
+      name: 'fg-border',
+      value: darkMode ? 'rgb(47, 47, 47)' : 'rgb(233, 233, 231)',
     }),
     borderColors = darkMode
-      ? [border.value.slice(4, -1), "37, 37, 37", "255, 255, 255"]
-      : [border.value.slice(4, -1), "238, 238, 237", "55, 53, 47"],
+      ? [border.value.slice(4, -1), '37, 37, 37', '255, 255, 255']
+      : [border.value.slice(4, -1), '238, 238, 237', '55, 53, 47'],
     boxShadows = darkMode
       ? [
-          "; box-shadow: rgba(255, 255, 255, 0.094) 0px -1px 0px;",
-          "; box-shadow: rgba(15, 15, 15, 0.2) 0px 0px 0px 1px inset;",
-          "; box-shadow: rgb(25, 25, 25) -3px 0px 0px, rgb(47, 47, 47) 0px 1px 0px;",
+          '; box-shadow: rgba(255, 255, 255, 0.094) 0px -1px 0px;',
+          '; box-shadow: rgba(15, 15, 15, 0.2) 0px 0px 0px 1px inset;',
+          '; box-shadow: rgb(25, 25, 25) -3px 0px 0px, rgb(47, 47, 47) 0px 1px 0px;',
         ]
       : [
-          "; box-shadow: rgba(55, 53, 47, 0.09) 0px -1px 0px;",
-          "; box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px inset;",
-          "; box-shadow: white -3px 0px 0px, rgb(233, 233, 231) 0px 1px 0px;",
+          '; box-shadow: rgba(55, 53, 47, 0.09) 0px -1px 0px;',
+          '; box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px inset;',
+          '; box-shadow: white -3px 0px 0px, rgb(233, 233, 231) 0px 1px 0px;',
         ];
   for (const el of document.querySelectorAll(`[style*="box-shadow:"]`)) {
     const boxShadow = el
-      .getAttribute("style")
+      .getAttribute('style')
       .match(/(?:^|(?:;\s*))box-shadow:\s*([^;]+);?/)?.[0];
     if (borderColors.some((color) => boxShadow.includes(color))) {
       boxShadows.push(boxShadow);
@@ -273,32 +273,32 @@ const styleBorders = () => {
 
   overrideStyle({
     selector: `[style*="height: 1px;"][style*="background"]`,
-    property: "background",
+    property: 'background',
     variable: border,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
   cssBody += `
     ${bodySelector} :is(${[...new Set(borderColors)]
-    .map(
-      (color) =>
-        `[style*="px solid rgb(${color}"], [style*="px solid rgba(${color}"]`
-    )
-    .join(", ")}):is([style*="border:"], [style*="border-top:"],
+      .map(
+        (color) =>
+          `[style*="px solid rgb(${color}"], [style*="px solid rgba(${color}"]`
+      )
+      .join(', ')}):is([style*="border:"], [style*="border-top:"],
       [style*="border-left:"], [style*="border-bottom:"],
       [style*="border-right:"]) { border-color: ${border.ref}; }
     ${[...new Set(boxShadows)]
       .map((shadow) => {
-        if (shadow.startsWith(";")) shadow = shadow.slice(1);
+        if (shadow.startsWith(';')) shadow = shadow.slice(1);
         return `${bodySelector} [style*="${shadow}"] { ${shadow
           .replace(
             /rgba?\([^\)]+\)/g,
-            shadow.includes("-3px 0px 0px, ")
-              ? "transparent"
+            shadow.includes('-3px 0px 0px, ')
+              ? 'transparent'
               : `var(--theme--fg-border, ${border.value})`
           )
           .slice(0, -1)} !important; }`;
       })
-      .join("")}
+      .join('')}
   `;
 };
 
@@ -314,7 +314,7 @@ const styleColoredText = () => {
         .notion-selectable .notion-enable-hover,
         .notion-code-block span.token
       `,
-      property: "color",
+      property: 'color',
       variable: `fg-${el.innerText}`,
     });
   }
@@ -327,22 +327,22 @@ const styleColoredText = () => {
     overrideStyle({
       element: el,
       selector: `.notion-text-block > [style*="color:"][style*="fill:"]`,
-      property: "color",
+      property: 'color',
       variable: `fg-${el.innerText}`,
     });
   }
 
   // board text
   for (const group of document.querySelectorAll(
-    ".notion-board-view .notion-board-group"
+    '.notion-board-view .notion-board-group'
   )) {
     // get color name from card
     const card = group.querySelector('a[style*="background"]'),
-      innerText = card.innerText.replace("Drag image to reposition\n", "");
+      innerText = card.innerText.replace('Drag image to reposition\n', '');
     if (!innerText || /\s/.test(innerText)) continue;
     const el = group.querySelector('[style*="height: 32px"]'),
       groupStyle = group
-        .getAttribute("style")
+        .getAttribute('style')
         .match(/background(?:-color)?:\s*([^;]+);?/)[1];
     overrideStyle({
       element: el,
@@ -351,38 +351,38 @@ const styleColoredText = () => {
         [style*="${groupStyle}"] > [style*="color"]:nth-child(2),
         [style*="${groupStyle}"] > div > svg
       )`,
-      property: "color",
+      property: 'color',
       // light_gray text doesn't exist
-      variable: `fg-${innerText === "light_gray" ? "secondary" : innerText}`,
-      specificity: ["mode"],
+      variable: `fg-${innerText === 'light_gray' ? 'secondary' : innerText}`,
+      specificity: ['mode'],
     });
   }
 };
 
 const styleBackgrounds = () => {
   const primary = cssVariable({
-      name: "bg-primary",
-      value: darkMode ? "rgb(25, 25, 25)" : "white",
+      name: 'bg-primary',
+      value: darkMode ? 'rgb(25, 25, 25)' : 'white',
     }),
     secondary = cssVariable({
-      name: "bg-secondary",
-      value: darkMode ? "rgb(32, 32, 32)" : "rgb(251, 251, 250)",
+      name: 'bg-secondary',
+      value: darkMode ? 'rgb(32, 32, 32)' : 'rgb(251, 251, 250)',
     });
 
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: primary,
-    valueAliases: darkMode ? [] : ["rgb(255, 255, 255)", "rgb(247, 247, 247)"],
+    valueAliases: darkMode ? [] : ['rgb(255, 255, 255)', 'rgb(247, 247, 247)'],
     postProcessor(selector, cssProps) {
       return [`${selector}:not(.notion-timeline-view)`, cssProps];
     },
   });
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: secondary,
     valueAliases: darkMode
-      ? ["rgb(37, 37, 37)", "rgb(47, 47, 47)"]
-      : ["rgb(253, 253, 253)"],
+      ? ['rgb(37, 37, 37)', 'rgb(47, 47, 47)']
+      : ['rgb(253, 253, 253)'],
   });
   // patch: remove overlay from settings sidebar
   // to match notion-enhancer menu sidebar colour
@@ -393,7 +393,7 @@ const styleBackgrounds = () => {
     selector: `.notion-timeline-item,
       .notion-calendar-view .notion-collection-item > a,
       .notion-gallery-view .notion-collection-item > a`,
-    property: "background",
+    property: 'background',
     variable: secondary,
   });
 
@@ -408,7 +408,7 @@ const styleBackgrounds = () => {
       [style*="transition: background"][style*="cursor: pointer;"][
         style*="border-radius: 3px; height: 24px; width: 24px;"][style*="box-shadow:"],
       [style*="right: 6px; top: 4px;"][style*="border-radius: 4px;"][style*="gap: 1px;"][style*="box-shadow:"]`,
-    property: "background",
+    property: 'background',
     variable: secondary,
   });
 
@@ -417,55 +417,55 @@ const styleBackgrounds = () => {
     selector: `.notion-overlay-container [data-overlay] :is(
       [style*="height: 100%; width: 275px;"][style*="flex-direction: column;"],
       .notion-space-settings [style*="flex-grow: 1"] > [style*="background-color"])`,
-    property: "background",
+    property: 'background',
     variable: primary,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
   overrideStyle({
     selector: `.notion-overlay-container [data-overlay] :is(
       [style*="height: 100%; width: 275px;"][style*="flex-direction: column;"] + [style*="width: 100%;"],
       .notion-space-settings [style*="height: 100%; background:"][style*="max-width: 250px;"])`,
-    property: "background",
+    property: 'background',
     variable: secondary,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
 
   // timeline fades
   overrideStyle({
     selector: `.notion-timeline-view`,
-    property: "background",
+    property: 'background',
     variable: primary,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
   cssBody += `[style*="linear-gradient(to left, ${
-    darkMode ? primary.value : "white"
+    darkMode ? primary.value : 'white'
   } 20%, rgba(${
-    darkMode ? primary.value.slice(4, -1) : "255, 255, 255"
+    darkMode ? primary.value.slice(4, -1) : '255, 255, 255'
   }, 0) 100%)"] { background-image: linear-gradient(to left,
       var(--theme--bg-primary, ${primary.value}) 20%, transparent
     100%) !important; }
     [style*="linear-gradient(to right, ${
-      darkMode ? primary.value : "white"
+      darkMode ? primary.value : 'white'
     } 20%, rgba(${
-    darkMode ? primary.value.slice(4, -1) : "255, 255, 255"
-  }, 0) 100%)"] { background-image: linear-gradient(to right,
+      darkMode ? primary.value.slice(4, -1) : '255, 255, 255'
+    }, 0) 100%)"] { background-image: linear-gradient(to right,
       var(--theme--bg-primary, ${primary.value}) 20%, transparent
     100%) !important; }
   `;
 
   // hovered elements, inputs and unchecked toggle backgrounds
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: cssVariable({
-      name: "bg-hover",
-      value: darkMode ? "rgba(255, 255, 255, 0.055)" : "rgba(55, 53, 47, 0.08)",
+      name: 'bg-hover',
+      value: darkMode ? 'rgba(255, 255, 255, 0.055)' : 'rgba(55, 53, 47, 0.08)',
     }),
     valueAliases: darkMode
       ? []
       : [
-          "rgba(242, 241, 238, 0.6)",
-          "rgb(225, 225, 225)",
-          "rgb(239, 239, 238)",
+          'rgba(242, 241, 238, 0.6)',
+          'rgb(225, 225, 225)',
+          'rgb(239, 239, 238)',
         ],
     postProcessor(selector, cssProps) {
       selector += `, ${bodySelector} [style*="height: 14px; width: 26px; border-radius: 44px;"][style*="rgba"]`;
@@ -481,12 +481,12 @@ const styleBackgrounds = () => {
   overrideStyle({
     selector: `.notion-overlay-container [data-overlay]
       > div > [style*="position: absolute"]:first-child`,
-    property: "background",
+    property: 'background',
     variable: cssVariable({
-      name: "bg-overlay",
-      value: darkMode ? "rgba(15, 15, 15, 0.8)" : "rgba(15, 15, 15, 0.6)",
+      name: 'bg-overlay',
+      value: darkMode ? 'rgba(15, 15, 15, 0.8)' : 'rgba(15, 15, 15, 0.6)',
     }),
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
 };
 
@@ -508,7 +508,7 @@ const styleColoredBackgrounds = () => {
       overrideStyle({
         element: el,
         selector: targetSelector,
-        property: "background",
+        property: 'background',
         variable: `bg-${el.innerText}`,
       });
     }
@@ -516,22 +516,22 @@ const styleColoredBackgrounds = () => {
 
   // board cards
   for (const group of document.querySelectorAll(
-    ".notion-board-view .notion-board-group"
+    '.notion-board-view .notion-board-group'
   )) {
     const card = group.querySelector('a[style*="background"]'),
-      innerText = card.innerText.replace("Drag image to reposition\n", "");
+      innerText = card.innerText.replace('Drag image to reposition\n', '');
     if (!innerText || /\s/.test(innerText)) continue;
     const groupStyle = group
-      .getAttribute("style")
+      .getAttribute('style')
       .match(/background(?:-color)?:\s*([^;]+);?/)[1];
     // in light mode pages in board views all have bg "white"
     // by default, must be styled based on parent
     overrideStyle({
       element: card,
       selector: `.notion-board-view .notion-board-group[style*="${groupStyle}"] a`,
-      property: "background",
+      property: 'background',
       variable: `bg-${innerText}`,
-      specificity: ["mode"],
+      specificity: ['mode'],
     });
     overrideStyle({
       element: group,
@@ -539,9 +539,9 @@ const styleColoredBackgrounds = () => {
         .notion-board-group,
         [style*="border-top-left-radius: 5px;"]
       )`,
-      property: "background",
+      property: 'background',
       variable: `dim-${innerText}`,
-      specificity: ["mode"],
+      specificity: ['mode'],
     });
   }
 
@@ -552,25 +552,25 @@ const styleColoredBackgrounds = () => {
     if (!el.innerText || /\s/.test(el.innerText)) continue;
     overrideStyle({
       element: el,
-      selector: ".notion-callout-block > div > div",
-      property: "background",
+      selector: '.notion-callout-block > div > div',
+      property: 'background',
       variable: `dim-${el.innerText}`,
     });
   }
   // use yellow for notification highlights
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: cssVariable({
-      name: "bg-yellow",
-      value: "rgba(255, 212, 0, 0.14)",
+      name: 'bg-yellow',
+      value: 'rgba(255, 212, 0, 0.14)',
     }),
-    specificity: ["value"],
+    specificity: ['value'],
   });
   // use light gray for taglikes e.g. file property values
   overrideStyle({
     selector: `[style*="height: 18px; border-radius: 3px; background"]`,
-    property: "background",
-    variable: "bg-light_gray",
+    property: 'background',
+    variable: 'bg-light_gray',
   });
 };
 
@@ -589,39 +589,39 @@ const styleTooltips = () => {
 
 const styleAccents = () => {
   const primary = cssVariable({
-      name: "accent-primary",
-      value: "rgb(35, 131, 226)",
+      name: 'accent-primary',
+      value: 'rgb(35, 131, 226)',
     }),
     primaryHover = cssVariable({
-      name: "accent-primary_hover",
-      value: "rgb(0, 117, 211)",
+      name: 'accent-primary_hover',
+      value: 'rgb(0, 117, 211)',
     }),
     primaryContrast = cssVariable({
-      name: "accent-primary_contrast",
-      value: "rgb(255, 255, 255)",
+      name: 'accent-primary_contrast',
+      value: 'rgb(255, 255, 255)',
     }),
     primaryTransparent = cssVariable({
-      name: "accent-primary_transparent",
-      value: "rgba(35, 131, 226, 0.14)",
+      name: 'accent-primary_transparent',
+      value: 'rgba(35, 131, 226, 0.14)',
     });
   overrideStyle({
-    property: "color",
+    property: 'color',
     variable: primary,
-    specificity: ["value"],
+    specificity: ['value'],
   });
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: primary,
-    specificity: ["value"],
+    specificity: ['value'],
     cssProps: {
       fill: primaryContrast,
       color: primaryContrast,
     },
   });
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: primaryHover,
-    specificity: ["value"],
+    specificity: ['value'],
     cssProps: {
       fill: primaryContrast,
       color: primaryContrast,
@@ -629,7 +629,7 @@ const styleAccents = () => {
   });
   overrideStyle({
     selector: `.notion-table-selection-overlay [style*="border: 2px solid"]`,
-    property: "border-color",
+    property: 'border-color',
     variable: primary,
     specificity: [],
   });
@@ -638,13 +638,13 @@ const styleAccents = () => {
       [style*="background: ${primary.value}"] svg[style*="fill"],
       [style*="background-color: ${primary.value}"]  svg[style*="fill"]
     `,
-    property: "fill",
+    property: 'fill',
     variable: primaryContrast,
     specificity: [],
   });
   overrideStyle({
     selector: `[style*="border-radius: 44px;"] > [style*="border-radius: 44px; background: white;"]`,
-    property: "background",
+    property: 'background',
     variable: primaryContrast,
     specificity: [],
   });
@@ -654,44 +654,44 @@ const styleAccents = () => {
       .notion-selectable-halo,
       #notion-app .rdp-day:not(.rdp-day_disabled):not(.rdp-day_selected
       ):not(.rdp-day_value):not(.rdp-day_start):not(.rdp-day_end):hover,
-      [style*="background: ${primaryTransparent.value.split(".")[0]}."],
-      [style*="background:${primaryTransparent.value.split(".")[0]}."],
-      [style*="background-color: ${primaryTransparent.value.split(".")[0]}."],
-      [style*="background-color:${primaryTransparent.value.split(".")[0]}."]
+      [style*="background: ${primaryTransparent.value.split('.')[0]}."],
+      [style*="background:${primaryTransparent.value.split('.')[0]}."],
+      [style*="background-color: ${primaryTransparent.value.split('.')[0]}."],
+      [style*="background-color:${primaryTransparent.value.split('.')[0]}."]
     `,
-    property: "background",
+    property: 'background',
     variable: primaryTransparent,
     specificity: [],
   });
 
   const secondary = cssVariable({
-      name: "accent-secondary",
-      value: "rgb(235, 87, 87)",
+      name: 'accent-secondary',
+      value: 'rgb(235, 87, 87)',
     }),
     secondaryAliases = [
-      "rgb(180, 65, 60)",
-      "rgb(211, 79, 67)",
-      "rgb(205, 73, 69)",
+      'rgb(180, 65, 60)',
+      'rgb(211, 79, 67)',
+      'rgb(205, 73, 69)',
     ],
     secondaryHover = cssVariable({
-      name: "accent-secondary_hover",
-      value: "rgba(235, 87, 87, 0.1)",
+      name: 'accent-secondary_hover',
+      value: 'rgba(235, 87, 87, 0.1)',
     }),
     secondaryContrast = cssVariable({
-      name: "accent-secondary_contrast",
-      value: "white",
+      name: 'accent-secondary_contrast',
+      value: 'white',
     });
   overrideStyle({
-    property: "color",
+    property: 'color',
     variable: secondary,
     valueAliases: secondaryAliases,
-    specificity: ["value"],
+    specificity: ['value'],
   });
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: secondary,
     valueAliases: secondaryAliases,
-    specificity: ["value"],
+    specificity: ['value'],
     cssProps: {
       fill: secondaryContrast,
       color: secondaryContrast,
@@ -705,16 +705,16 @@ const styleAccents = () => {
     },
   });
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: secondary,
     valueAliases: secondaryAliases,
-    specificity: ["value"],
+    specificity: ['value'],
     cssProps: {
       fill: secondaryContrast,
       color: secondaryContrast,
     },
     postProcessor(selector, cssProps) {
-      delete cssProps["background"];
+      delete cssProps['background'];
       return [
         `#notion-app .rdp-day_today:not(.rdp-day_selected):not(.rdp-day_value):not(.rdp-day_start
           ):not(.rdp-day_end), :is(${selector}) + :is([style*="fill: ${secondaryContrast.value};"],
@@ -725,9 +725,9 @@ const styleAccents = () => {
     },
   });
   overrideStyle({
-    property: "background",
+    property: 'background',
     variable: secondaryHover,
-    specificity: ["value"],
+    specificity: ['value'],
   });
 
   // box-shadows are complicated, style manually
@@ -743,129 +743,129 @@ const styleAccents = () => {
         var(--theme--accent-primary, ${primary.value}) 0px 0px 0px 2px
       !important;
     }
-    ${["box-shadow: rgb(35, 131, 226) 0px 0px 0px 2px inset"]
+    ${['box-shadow: rgb(35, 131, 226) 0px 0px 0px 2px inset']
       .map((shadow) => {
         return `[style*="${shadow}"] { ${shadow.replace(
           /rgba?\([^\)]+\)/g,
           `var(--theme--accent-primary, ${primary.value})`
         )} !important; }`;
       })
-      .join("")}
+      .join('')}
     ${[
-      "border: 1px solid rgb(110, 54, 48)",
-      "border: 1px solid rgba(235, 87, 87, 0.5)",
-      "border: 2px solid rgb(110, 54, 48)",
-      "border: 2px solid rgb(227, 134, 118)",
-      "border-right: 1px solid rgb(180, 65, 60)",
-      "border-right: 1px solid rgb(211, 79, 67)",
+      'border: 1px solid rgb(110, 54, 48)',
+      'border: 1px solid rgba(235, 87, 87, 0.5)',
+      'border: 2px solid rgb(110, 54, 48)',
+      'border: 2px solid rgb(227, 134, 118)',
+      'border-right: 1px solid rgb(180, 65, 60)',
+      'border-right: 1px solid rgb(211, 79, 67)',
     ]
       .map((border) => `[style*="${border}"]`)
-      .join(", ")} { border-color: ${secondary.ref}; }`;
+      .join(', ')} { border-color: ${secondary.ref}; }`;
 };
 
 const styleScrollbars = () => {
   const scrollbarTrack = cssVariable({
-    name: "scrollbar-track",
-    value: darkMode ? "rgba(202, 204, 206, 0.04)" : "#EDECE9",
+    name: 'scrollbar-track',
+    value: darkMode ? 'rgba(202, 204, 206, 0.04)' : '#EDECE9',
   });
   overrideStyle({
-    selector: "::-webkit-scrollbar-track",
-    property: "background",
+    selector: '::-webkit-scrollbar-track',
+    property: 'background',
     variable: scrollbarTrack,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
   overrideStyle({
-    selector: "::-webkit-scrollbar-corner",
-    property: "background",
+    selector: '::-webkit-scrollbar-corner',
+    property: 'background',
     variable: scrollbarTrack,
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
   overrideStyle({
-    selector: "::-webkit-scrollbar-thumb",
-    property: "background",
+    selector: '::-webkit-scrollbar-thumb',
+    property: 'background',
     variable: cssVariable({
-      name: "scrollbar-thumb",
-      value: darkMode ? "#474c50" : "#D3D1CB",
+      name: 'scrollbar-thumb',
+      value: darkMode ? '#474c50' : '#D3D1CB',
     }),
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
   overrideStyle({
-    selector: "::-webkit-scrollbar-thumb:hover",
-    property: "background",
+    selector: '::-webkit-scrollbar-thumb:hover',
+    property: 'background',
     variable: cssVariable({
-      name: "scrollbar-thumb_hover",
-      value: darkMode ? "rgba(202, 204, 206, 0.3)" : "#AEACA6",
+      name: 'scrollbar-thumb_hover',
+      value: darkMode ? 'rgba(202, 204, 206, 0.3)' : '#AEACA6',
     }),
-    specificity: ["mode"],
+    specificity: ['mode'],
   });
 };
 
 const styleCode = () => {
   overrideStyle({
     selector: `.notion-text-block .notion-enable-hover[style*="mono"]`,
-    property: "color",
-    variable: "code-inline_fg",
+    property: 'color',
+    variable: 'code-inline_fg',
   });
   overrideStyle({
     selector: `.notion-text-block .notion-enable-hover[style*="mono"]`,
-    property: "background",
-    variable: "code-inline_bg",
+    property: 'background',
+    variable: 'code-inline_bg',
   });
 
   overrideStyle({
     selector: `.notion-code-block > [style*="mono"]`,
-    property: "color",
-    variable: "code-block_fg",
+    property: 'color',
+    variable: 'code-block_fg',
   });
   overrideStyle({
     selector: `.notion-code-block > div > [style*="background"]`,
-    property: "background",
-    variable: "code-block_bg",
+    property: 'background',
+    variable: 'code-block_bg',
   });
 
   const aliases = {},
-    code = document.querySelector(".notion-code-block .token");
+    code = document.querySelector('.notion-code-block .token');
   for (const token of [
     // standard tokens from https://prismjs.com/tokens.html
-    "keyword",
-    "builtin",
-    "class-name",
-    "function",
-    "boolean",
-    "number",
-    "string",
-    "char",
-    "symbol",
-    "regex",
-    "url",
-    "operator",
-    "variable",
-    "constant",
-    "property",
-    "punctuation",
-    "important",
-    "comment",
-    "tag",
-    "attr-name",
-    "attr-value",
-    "namespace",
-    "prolog",
-    "doctype",
-    "cdata",
-    "entity",
-    "atrule",
-    "selector",
-    "inserted",
-    "deleted",
+    'keyword',
+    'builtin',
+    'class-name',
+    'function',
+    'boolean',
+    'number',
+    'string',
+    'char',
+    'symbol',
+    'regex',
+    'url',
+    'operator',
+    'variable',
+    'constant',
+    'property',
+    'punctuation',
+    'important',
+    'comment',
+    'tag',
+    'attr-name',
+    'attr-value',
+    'namespace',
+    'prolog',
+    'doctype',
+    'cdata',
+    'entity',
+    'atrule',
+    'selector',
+    'inserted',
+    'deleted',
   ]) {
     code.className = `token ${token}`;
     overrideStyle({
       target: code,
       selector: `.notion-code-block .token.${token}`,
-      property: "color",
-      variable: `code-${token.replace(/-/g, "_")}`,
+      property: 'color',
+      variable: `code-${token.replace(/-/g, '_')}`,
       variableAliases: aliases,
-      specificity: ["mode"],
+      specificity: ['mode'],
     });
   }
 
@@ -888,6 +888,6 @@ styleCode();
 
 console.log(
   `body${modeSelector} { ${cssRoot} } ${Object.entries(cssRefs)
-    .map(([body, selectors]) => `${[...new Set(selectors)].join(",")}{${body}}`)
-    .join("")} ${cssBody}`.replace(/\s+/g, " ")
+    .map(([body, selectors]) => `${[...new Set(selectors)].join(',')}{${body}}`)
+    .join('')} ${cssBody}`.replace(/\s+/g, ' ')
 );

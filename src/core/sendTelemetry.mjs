@@ -6,7 +6,7 @@
 
 // telemetry endpoint not ready, disabled for current release
 
-const pingEndpoint = "https://notion-enhancer.deno.dev/api/ping",
+const pingEndpoint = 'https://notion-enhancer.deno.dev/api/ping',
   collectTelemetryData = async () => {
     const { platform, version } = globalThis.__enhancerApi,
       { getMods, isEnabled } = globalThis.__enhancerApi,
@@ -24,14 +24,12 @@ const pingEndpoint = "https://notion-enhancer.deno.dev/api/ping",
     //   agreedToTerms = await db.get("agreedToTerms"),
     //   telemetryEnabled = (await db.get("telemetryEnabled")) ?? true;
     // if (!telemetryEnabled || agreedToTerms !== version) return;
-
     // const lastTelemetryPing = await db.get("lastTelemetryPing");
     // if (lastTelemetryPing) {
     //   const msSincePing = Date.now() - new Date(lastTelemetryPing);
     //   // send ping only once a week
     //   if (msSincePing / 8.64e7 < 7) return;
     // }
-
     // try {
     //   const telemetryData = await collectTelemetryData(),
     //     pingTimestamp = await fetch(pingEndpoint, {

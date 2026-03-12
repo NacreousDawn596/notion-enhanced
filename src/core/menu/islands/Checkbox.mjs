@@ -15,7 +15,7 @@ function Checkbox({ _get, _set, _requireReload = true, ...props }) {
       ...${props}
     />`;
   extendProps($input, { onchange: () => _set?.($input.checked) });
-  useState(["rerender"], async () => {
+  useState(['rerender'], async () => {
     const checked = (await _get?.()) ?? $input.checked;
     $input.checked = checked;
     if (_requireReload) {
@@ -28,7 +28,7 @@ function Checkbox({ _get, _set, _requireReload = true, ...props }) {
     tabindex="0"
     class="notion-enhancer--menu-checkbox cursor-pointer"
     onkeydown=${(event) => {
-      if ([" ", "Enter"].includes(event.key)) {
+      if ([' ', 'Enter'].includes(event.key)) {
         event.preventDefault();
         $input.click();
       }

@@ -4,12 +4,12 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Heading } from "./Heading.mjs";
-import { Description } from "./Description.mjs";
-import { Checkbox } from "./Checkbox.mjs";
-import { Button } from "./Button.mjs";
-import { Input } from "./Input.mjs";
-import { Popup } from "./Popup.mjs";
+import { Heading } from './Heading.mjs';
+import { Description } from './Description.mjs';
+import { Checkbox } from './Checkbox.mjs';
+import { Button } from './Button.mjs';
+import { Input } from './Input.mjs';
+import { Popup } from './Popup.mjs';
 
 function Profile({ id }) {
   const { html, setState } = globalThis.__enhancerApi,
@@ -18,21 +18,21 @@ function Profile({ id }) {
     db = initDatabase();
 
   const getName = async () => {
-      let profileName = await profile.get("profileName");
-      if (id === "default") profileName ??= "default";
-      return profileName ?? "";
+      let profileName = await profile.get('profileName');
+      if (id === 'default') profileName ??= 'default';
+      return profileName ?? '';
     },
     setName = async (name) => {
       // name only has effect in menu
       // doesn't need to trigger reload
-      await profile.set("profileName", name);
+      await profile.set('profileName', name);
     },
     isActive = async () => {
       return id === (await getProfile());
     },
     setActive = async () => {
       if (await isActive()) return;
-      await db.set("activeProfile", id);
+      await db.set('activeProfile', id);
       setState({ rerender: true });
     };
 
@@ -62,7 +62,7 @@ function Profile({ id }) {
         try {
           let res = progress.currentTarget.result;
           res = JSON.parse(res);
-          delete res["profileName"];
+          delete res['profileName'];
           await profile.import(res);
           setState({ rerender: true });
           $uploadSuccess.open();
@@ -72,18 +72,18 @@ function Profile({ id }) {
           setTimeout(() => $uploadError.close(), 2000);
         }
         // clear input value to allow repeat uploads
-        event.target.value = "";
+        event.target.value = '';
       };
       reader.readAsText(file);
     },
     downloadProfile = async () => {
       const now = new Date(),
         year = now.getFullYear().toString(),
-        month = (now.getMonth() + 1).toString().padStart(2, "0"),
-        day = now.getDate().toString().padStart(2, "0"),
-        hour = now.getHours().toString().padStart(2, "0"),
-        min = now.getMinutes().toString().padStart(2, "0"),
-        sec = now.getSeconds().toString().padStart(2, "0"),
+        month = (now.getMonth() + 1).toString().padStart(2, '0'),
+        day = now.getDate().toString().padStart(2, '0'),
+        hour = now.getHours().toString().padStart(2, '0'),
+        min = now.getMinutes().toString().padStart(2, '0'),
+        sec = now.getSeconds().toString().padStart(2, '0'),
         date = year + month + day + hour + min + sec;
       const $a = html`<a
         class="hidden"
@@ -104,16 +104,16 @@ function Profile({ id }) {
     />`;
 
   const deleteProfile = async () => {
-      let profileIds = await db.get("profileIds");
-      if (!profileIds?.length) profileIds = ["default"];
+      let profileIds = await db.get('profileIds');
+      if (!profileIds?.length) profileIds = ['default'];
       // clear profile data
       const keys = Object.keys(await profile.export());
       await profile.remove(keys);
       // remove profile from list
       const index = profileIds.indexOf(id);
       if (index > -1) profileIds.splice(index, 1);
-      await db.set("profileIds", profileIds);
-      if (await isActive()) await db.remove("activeProfile");
+      await db.set('profileIds', profileIds);
+      if (await isActive()) await db.remove('activeProfile');
       setState({ rerender: true });
     },
     $delete = html`<button
@@ -166,7 +166,7 @@ function Profile({ id }) {
       tagName="label"
       class="relative"
       onkeydown=${(event) => {
-        if ([" ", "Enter"].includes(event.key)) {
+        if ([' ', 'Enter'].includes(event.key)) {
           event.preventDefault();
           $uploadInput.click();
         }
@@ -185,8 +185,8 @@ function Profiles() {
 
   const db = initDatabase(),
     refreshProfiles = async () => {
-      let profileIds = await db.get("profileIds");
-      if (!profileIds?.length) profileIds = ["default"];
+      let profileIds = await db.get('profileIds');
+      if (!profileIds?.length) profileIds = ['default'];
       const $profiles = profileIds.map((id) => {
         return document.getElementById(id) || html`<${Profile} id=${id} />`;
       });
@@ -204,16 +204,16 @@ function Profiles() {
       if (!$input.children[0].value) return;
       const name = $input.children[0].value,
         id = crypto.randomUUID();
-      let profileIds = await db.get("profileIds");
-      if (!profileIds?.length) profileIds = ["default"];
-      await db.set("profileIds", [...profileIds, id]);
-      await initDatabase([id]).set("profileName", name);
-      $input.children[0].value = "";
+      let profileIds = await db.get('profileIds');
+      if (!profileIds?.length) profileIds = ['default'];
+      await db.set('profileIds', [...profileIds, id]);
+      await initDatabase([id]).set('profileName', name);
+      $input.children[0].value = '';
       setState({ rerender: true });
     };
-  useState(["rerender"], () => refreshProfiles());
+  useState(['rerender'], () => refreshProfiles());
   $input.onkeydown = (event) => {
-    if (event.key === "Enter") addProfile();
+    if (event.key === 'Enter') addProfile();
   };
 
   return html`

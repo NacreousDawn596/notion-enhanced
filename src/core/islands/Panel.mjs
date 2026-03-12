@@ -5,13 +5,13 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Tooltip } from "./Tooltip.mjs";
-import { TopbarButton } from "./TopbarButton.mjs";
-import { Select } from "../menu/islands/Select.mjs";
+import { Tooltip } from './Tooltip.mjs';
+import { TopbarButton } from './TopbarButton.mjs';
+import { Select } from '../menu/islands/Select.mjs';
 
-const coreId = "0f0bf8b6-eae6-4273-b307-8fc43f2ee082",
-  topbarId = "e0700ce3-a9ae-45f5-92e5-610ded0e348d",
-  tweaksId = "5174a483-c88d-4bf8-a95f-35cd330b76e2";
+const coreId = '0f0bf8b6-eae6-4273-b307-8fc43f2ee082',
+  topbarId = 'e0700ce3-a9ae-45f5-92e5-610ded0e348d',
+  tweaksId = '5174a483-c88d-4bf8-a95f-35cd330b76e2';
 
 // note: these islands are not reusable.
 // panel views can be added via addPanelView,
@@ -38,14 +38,14 @@ function View({ _get }) {
       class="overflow-(y-auto x-hidden)
       h-[calc(100%-46px)] min-w-[var(--panel--width)]"
     ></div>`;
-  useState(["rerender"], async () => {
+  useState(['rerender'], async () => {
     const openView = await _get?.(),
       $view =
         panelViews.find(([{ title }]) => {
           return title === openView;
         })?.[1] || panelViews[0]?.[1];
     if (!$container.contains($view)) {
-      $container.innerHTML = "";
+      $container.innerHTML = '';
       $container.append($view);
     }
   });
@@ -61,7 +61,7 @@ function Switcher({ _get, _set, minWidth, maxWidth }) {
       minWidth=${minWidth - 56}
       ...${{ _get, _set }}
     />`;
-  useState(["panelViews"], ([panelViews = []]) => {
+  useState(['panelViews'], ([panelViews = []]) => {
     const values = panelViews.map(([{ title, $icon }]) => {
       // panel switcher internally uses the select island,
       // which expects an option value rather than a title
@@ -113,10 +113,10 @@ function Panel({
           flex-direction: row !important;
         }
         /* prevent page load skeletons overlapping with panel */
-        .notion-frame [role="progressbar"] {
+        .notion-frame [role='progressbar'] {
           padding-right: var(--panel--width);
         }
-        .notion-frame [role="progressbar"] > div {
+        .notion-frame [role='progressbar'] > div {
           overflow-x: clip;
         }
       </style>
@@ -139,8 +139,8 @@ function Panel({
       </aside>
     </div>`;
 
-  const notionTopbar = ".notion-topbar",
-    topbarFavorite = ".notion-topbar-favorite-button",
+  const notionTopbar = '.notion-topbar',
+    topbarFavorite = '.notion-topbar-favorite-button',
     $topbarToggle = html`<${TopbarButton}
       aria-label="Toggle side panel"
       icon="panel-right"
@@ -156,9 +156,9 @@ function Panel({
   isEnabled(topbarId).then(async (topbarEnabled) => {
     if (!topbarEnabled) return;
     const topbarDatabase = await modDatabase(topbarId),
-      panelButton = await topbarDatabase.get("panelButton"),
-      panelIcon = await topbarDatabase.get("panelIcon");
-    if (panelButton === "Text") {
+      panelButton = await topbarDatabase.get('panelButton'),
+      panelIcon = await topbarDatabase.get('panelIcon');
+    if (panelButton === 'Text') {
       $topbarToggle.innerHTML = `<span>${$topbarToggle.ariaLabel}</span>`;
     } else if (panelIcon?.content) $topbarToggle.innerHTML = panelIcon.content;
   });
@@ -174,7 +174,7 @@ function Panel({
     },
     setInteractive = (interactive) => {
       $panel
-        .querySelectorAll("[tabindex]")
+        .querySelectorAll('[tabindex]')
         .forEach(($el) => ($el.tabIndex = interactive ? 1 : -1));
     },
     isAnimated = () => {
@@ -182,39 +182,39 @@ function Panel({
       return Date.now() - _animatedAt <= transitionDuration;
     },
     isDragging = () => !isNaN(preDragWidth) && !isNaN(dragStartX),
-    isPinned = () => $panel.hasAttribute("data-pinned"),
-    isPeeked = () => $panel.hasAttribute("data-peeked"),
+    isPinned = () => $panel.hasAttribute('data-pinned'),
+    isPeeked = () => $panel.hasAttribute('data-peeked'),
     isClosed = () => !isPinned() && !isPeeked();
 
-  const closedWidth = { width: "0px" },
-    openWidth = { width: "var(--panel--width, 0px)" },
+  const closedWidth = { width: '0px' },
+    openWidth = { width: 'var(--panel--width, 0px)' },
     peekAnimation = {
-      height: "calc(100vh - 120px)",
-      bottom: "60px",
-      borderTopWidth: "1px",
-      borderBottomWidth: "1px",
-      borderTopLeftRadius: "8px",
-      borderBottomLeftRadius: "8px",
-      boxShadow: document.body.classList.contains("dark")
-        ? "rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px"
-        : "rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px",
+      height: 'calc(100vh - 120px)',
+      bottom: '60px',
+      borderTopWidth: '1px',
+      borderBottomWidth: '1px',
+      borderTopLeftRadius: '8px',
+      borderBottomLeftRadius: '8px',
+      boxShadow: document.body.classList.contains('dark')
+        ? 'rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px'
+        : 'rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px',
     },
     pinAnimation = {
-      height: "calc(100vh - 45px)",
-      bottom: "0px",
-      borderTopWidth: "0px",
-      borderBottomWidth: "0px",
-      borderTopLeftRadius: "0px",
-      borderBottomLeftRadius: "0px",
-      boxShadow: "none",
+      height: 'calc(100vh - 45px)',
+      bottom: '0px',
+      borderTopWidth: '0px',
+      borderBottomWidth: '0px',
+      borderTopLeftRadius: '0px',
+      borderBottomLeftRadius: '0px',
+      boxShadow: 'none',
     };
 
   const animationState = { ...closedWidth },
     animate = ($target, keyframes) => {
       const opts = {
-        fill: "forwards",
+        fill: 'forwards',
         duration: transitionDuration,
-        easing: "ease",
+        easing: 'ease',
       };
       $target.animate(keyframes, opts);
     },
@@ -227,7 +227,7 @@ function Panel({
   isEnabled(tweaksId).then(async (tweaksEnabled) => {
     if (!tweaksEnabled) return;
     const tweaksDatabase = await modDatabase(tweaksId),
-      snappyTransitions = await tweaksDatabase.get("snappyTransitions");
+      snappyTransitions = await tweaksDatabase.get('snappyTransitions');
     if (snappyTransitions) transitionDuration = 0;
   });
 
@@ -247,8 +247,8 @@ function Panel({
     startDrag = async (event) => {
       dragStartX = event.clientX;
       preDragWidth = await getWidth();
-      document.addEventListener("mousemove", onDrag);
-      document.addEventListener("mouseup", endDrag);
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', endDrag);
     },
     onDrag = (event) => {
       event.preventDefault();
@@ -256,22 +256,22 @@ function Panel({
       $panel.resize(preDragWidth + (dragStartX - event.clientX));
     },
     endDrag = (event) => {
-      document.removeEventListener("mousemove", onDrag);
-      document.removeEventListener("mouseup", endDrag);
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', endDrag);
       if (!isDragging()) return;
       $panel.resize(preDragWidth + (dragStartX - event.clientX));
       // toggle panel if not resized
       if (dragStartX - event.clientX === 0) $panel.toggle();
       preDragWidth = dragStartX = undefined;
     };
-  $resizeHandle.addEventListener("mousedown", startDrag);
+  $resizeHandle.addEventListener('mousedown', startDrag);
   $panel.lastElementChild.prepend($resizeHandle);
 
   // add tooltips to panel pin/unpin toggles
   const $resizeTooltipClick = html`<span></span>`,
     $resizeTooltip = html`<${Tooltip}
       onbeforeshow=${() => {
-        $resizeTooltipClick.innerText = isPinned() ? "close" : "lock open";
+        $resizeTooltipClick.innerText = isPinned() ? 'close' : 'lock open';
       }}
       ><b>Drag</b> to resize<br />
       <b>Click</b> to ${$resizeTooltipClick}
@@ -280,15 +280,15 @@ function Panel({
     $toggleTooltip = html`<${Tooltip}
       onbeforeshow=${() => {
         $toggleTooltipClick.innerText = isPinned()
-          ? "Close sidebar"
-          : "Lock sidebar open";
+          ? 'Close sidebar'
+          : 'Lock sidebar open';
       }}
       >${$toggleTooltipClick}<br />
       ${hotkey}
     <//>`;
-  $resizeTooltip.attach($resizeHandle, "left");
-  $toggleTooltip.attach($topbarToggle, "bottom");
-  $toggleTooltip.attach($panelToggle, "bottom");
+  $resizeTooltip.attach($resizeHandle, 'left');
+  $toggleTooltip.attach($topbarToggle, 'bottom');
+  $toggleTooltip.attach($panelToggle, 'bottom');
 
   // hovering over the peek trigger will temporarily
   // pop out an interactive preview of the panel
@@ -299,16 +299,16 @@ function Panel({
     group-[&[data-pinned]]/panel:(w-[calc(var(--panel--width,0)+8px)])"
   ></div>`;
   modDatabase(coreId).then(async (db) => {
-    _peekPanelOnHover = await db.get("peekPanelOnHover");
+    _peekPanelOnHover = await db.get('peekPanelOnHover');
     if (_peekPanelOnHover) $panel.prepend($peekTrigger);
   });
-  $panel.addEventListener("mouseout", () => {
+  $panel.addEventListener('mouseout', () => {
     if (isDragging() || isAnimated() || isPinned()) return;
-    if (!$panel.matches(":hover")) $panel.close();
+    if (!$panel.matches(':hover')) $panel.close();
   });
-  $panel.addEventListener("mouseover", () => {
+  $panel.addEventListener('mouseover', () => {
     _peekDebounce ??= setTimeout(() => {
-      if (isClosed() && $panel.matches(":hover")) $panel.peek();
+      if (isClosed() && $panel.matches(':hover')) $panel.peek();
       _peekDebounce = undefined;
     }, 100);
   });
@@ -316,8 +316,8 @@ function Panel({
   // moves ai/q&a button out of the way of open panel.
   // normally would place outside of an island, but in
   // this case is necessary for syncing up animations
-  const notionAi = ".notion-help-button, .notion-ai-button",
-    floatingButtons = ".notion-enhancer--floating-buttons",
+  const notionAi = '.notion-help-button, .notion-ai-button',
+    floatingButtons = '.notion-enhancer--floating-buttons',
     repositionCorner = async (offset) => {
       const $help = document.querySelector(notionAi),
         $floating = document.querySelector(floatingButtons);
@@ -329,15 +329,15 @@ function Panel({
       for (const $btn of [$help, $floating]) {
         if (!$btn) continue;
         const computedStyles = getComputedStyle($btn),
-          visible = computedStyles.getPropertyValue("display") !== "none";
+          visible = computedStyles.getPropertyValue('display') !== 'none';
         if (!visible) continue;
-        const width = computedStyles.getPropertyValue("width"),
-          from = computedStyles.getPropertyValue("right"),
-          to = offset + "px";
+        const width = computedStyles.getPropertyValue('width'),
+          from = computedStyles.getPropertyValue('right'),
+          to = offset + 'px';
         // offset floating buttons from help
         offset += 12 + parseInt(width);
         if (from === to) continue;
-        $btn.style.setProperty("right", to);
+        $btn.style.setProperty('right', to);
         animate($btn, [({ right: from }, { right: to })]);
       }
       if ($help || $floating) removeMutationListener(repositionCorner);
@@ -351,9 +351,9 @@ function Panel({
     if (isClosed()) Object.assign(animationState, pinAnimation);
     animatePanel({ ...openWidth, ...pinAnimation });
     animate($panel, [closedWidth, openWidth]);
-    $panel.removeAttribute("data-peeked");
+    $panel.removeAttribute('data-peeked');
     $panel.dataset.pinned = true;
-    $topbarToggle.setAttribute("data-active", true);
+    $topbarToggle.setAttribute('data-active', true);
     setInteractive(true);
     _setOpen(true);
     $panel.resize();
@@ -367,9 +367,9 @@ function Panel({
     // queue close in case mouse is no longer peeking
     // after the initial animation is complete
     setTimeout(() => {
-      if (!isDragging() && !$panel.matches(":hover")) $panel.close();
+      if (!isDragging() && !$panel.matches(':hover')) $panel.close();
     }, transitionDuration);
-    $panel.removeAttribute("data-pinned");
+    $panel.removeAttribute('data-pinned');
     $panel.dataset.peeked = true;
     setInteractive(true);
     $panel.resize();
@@ -377,14 +377,14 @@ function Panel({
   $panel.close = async () => {
     if (isClosed()) return;
     if (panelViews.length) _setOpen(false);
-    $topbarToggle.removeAttribute("data-active");
+    $topbarToggle.removeAttribute('data-active');
     const width = (animationState.width = `${await getWidth()}px`);
     // only animate container close if it is actually taking up space,
     // otherwise will unnaturally grow + retrigger peek on peek mouseout
     if (isPinned()) animate($panel, [{ width }, closedWidth]);
-    if (!$panel.matches(":hover") || !_peekPanelOnHover) {
-      $panel.removeAttribute("data-pinned");
-      $panel.removeAttribute("data-peeked");
+    if (!$panel.matches(':hover') || !_peekPanelOnHover) {
+      $panel.removeAttribute('data-pinned');
+      $panel.removeAttribute('data-peeked');
       animatePanel(closedWidth);
       setInteractive(false);
       $panel.resize();
@@ -404,13 +404,13 @@ function Panel({
     // plus updates dependent styles e.g. page skeleton padding
     if (isClosed()) width = 0;
     const $parent = $panel.parentElement || $panel;
-    $parent.style.setProperty("--panel--width", `${width}px`);
-    if ($parent !== $panel) $panel.style.removeProperty("--panel--width");
+    $parent.style.setProperty('--panel--width', `${width}px`);
+    if ($parent !== $panel) $panel.style.removeProperty('--panel--width');
     repositionCorner(width);
   };
 
-  useState(["panelViews"], async ([panelViews = []]) => {
-    $topbarToggle.style.display = panelViews.length ? "" : "none";
+  useState(['panelViews'], async ([panelViews = []]) => {
+    $topbarToggle.style.display = panelViews.length ? '' : 'none';
     if (panelViews.length && (await _getOpen())) $panel.pin();
     else $panel.close();
   });

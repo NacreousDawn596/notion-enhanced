@@ -4,44 +4,44 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-"use strict";
+'use strict';
 
-const coreId = "0f0bf8b6-eae6-4273-b307-8fc43f2ee082",
+const coreId = '0f0bf8b6-eae6-4273-b307-8fc43f2ee082',
   isElectron = () => {
     try {
-      return typeof module !== "undefined";
+      return typeof module !== 'undefined';
     } catch {}
     return false;
   };
 
 if (isElectron()) {
-  require("./api/system.js");
-  require("./api/registry.js");
+  require('./api/system.js');
+  require('./api/registry.js');
 
   const { enhancerUrl } = globalThis.__enhancerApi,
     { getMods, isEnabled, modDatabase } = globalThis.__enhancerApi;
 
   module.exports = async (target, __exports, __eval) => {
     const __getApi = () => globalThis.__enhancerApi;
-    if (target === ".webpack/main/index.js") require("./worker.js");
+    if (target === '.webpack/main/index.js') require('./worker.js');
     else {
       // expose globalThis.__enhancerApi to scripts
-      const { contextBridge } = require("electron");
-      contextBridge.exposeInMainWorld("__getEnhancerApi", __getApi);
+      const { contextBridge } = require('electron');
+      contextBridge.exposeInMainWorld('__getEnhancerApi', __getApi);
 
       // load clientStyles, clientScripts
-      document.addEventListener("readystatechange", async () => {
-        if (document.readyState !== "complete") return false;
-        const $script = document.createElement("script");
-        $script.type = "module";
-        $script.src = enhancerUrl("load.mjs");
+      document.addEventListener('readystatechange', async () => {
+        if (document.readyState !== 'complete') return false;
+        const $script = document.createElement('script');
+        $script.type = 'module';
+        $script.src = enhancerUrl('load.mjs');
         document.head.append($script);
 
         // register user-provided javascript for execution in-app
-        if (target === ".webpack/renderer/tab_browser_view/preload.js") {
+        if (target === '.webpack/renderer/tab_browser_view/preload.js') {
           const db = await modDatabase(coreId),
-            { webFrame } = require("electron"),
-            customScript = (await db.get("customScript"))?.content;
+            { webFrame } = require('electron'),
+            customScript = (await db.get('customScript'))?.content;
           if (customScript) webFrame.executeJavaScript(customScript);
         }
       });
@@ -63,6 +63,6 @@ if (isElectron()) {
     }
   };
 } else {
-  import(chrome.runtime.getURL("/api/system.js")) //
-    .then(() => import(chrome.runtime.getURL("/load.mjs")));
+  import(chrome.runtime.getURL('/api/system.js')) //
+    .then(() => import(chrome.runtime.getURL('/load.mjs')));
 }

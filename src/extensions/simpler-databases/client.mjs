@@ -45,15 +45,22 @@ export default async function ({ web, components }, db) {
       if (!$title.titleObserver) {
         if (!state) return;
         $title.titleObserver = new MutationObserver(async () => {
-          const customTitle = await db.get(['collections', blockId, 'replace_title'], false);
-          if (customTitle && $title.innerText !== customTitle) $title.innerText = customTitle;
+          const customTitle = await db.get(
+            ['collections', blockId, 'replace_title'],
+            false
+          );
+          if (customTitle && $title.innerText !== customTitle)
+            $title.innerText = customTitle;
         });
       } else $title.titleObserver.disconnect();
 
       if (state) {
         // observe
         $title.innerText = state;
-        $title.titleObserver.observe($title, { characterData: true, childList: true });
+        $title.titleObserver.observe($title, {
+          characterData: true,
+          childList: true,
+        });
       } else {
         // reset
         $title.titleObserver.disconnect();
@@ -72,7 +79,10 @@ export default async function ({ web, components }, db) {
           $collectionView.style.height = $collectionView.offsetHeight + 'px';
           requestAnimationFrame(() => {
             $collection.dataset[datasetKey] = true;
-            setTimeout(() => ($collectionView.dataset.simplerDbHideItems = 'true'), 200); // hide drag handles
+            setTimeout(
+              () => ($collectionView.dataset.simplerDbHideItems = 'true'),
+              200
+            ); // hide drag handles
           });
         },
         showCollection = () => {
@@ -89,7 +99,10 @@ export default async function ({ web, components }, db) {
         };
 
       if (!$collection.dataset[datasetKey]) {
-        const storedState = await db.get(['collections', blockId, 'toggle_hidden'], false);
+        const storedState = await db.get(
+          ['collections', blockId, 'toggle_hidden'],
+          false
+        );
         if (storedState) {
           hideCollection();
         }
@@ -222,12 +235,14 @@ export default async function ({ web, components }, db) {
     },
   ];
 
-  const isLinked = ($collection) => !!$collection.querySelector(linkedCollectionTitleSelector),
+  const isLinked = ($collection) =>
+      !!$collection.querySelector(linkedCollectionTitleSelector),
     getViewType = ($collection) =>
       $collection.querySelector(viewContainerSelector)?.className.split('-')[1],
     setTweakState = ($collection, key, state) => {
       const datasetKey = 'simplerDbTweaks';
-      if (!$collection.dataset[datasetKey]) $collection.dataset[datasetKey] = '';
+      if (!$collection.dataset[datasetKey])
+        $collection.dataset[datasetKey] = '';
 
       key = web.escape(key);
       const isActive = $collection.dataset[datasetKey].includes(`[${key}]`);
@@ -248,10 +263,13 @@ export default async function ({ web, components }, db) {
     focusNextItem = (event) => {
       event.stopPropagation();
       event.preventDefault();
-      const $focusedItem = event.target.closest(`[class^="${configItemClass}"]`);
+      const $focusedItem = event.target.closest(
+        `[class^="${configItemClass}"]`
+      );
       if (!$focusedItem) return;
       let $targetItem = $focusedItem.nextElementSibling;
-      if (!$targetItem) $targetItem = $focusedItem.parentElement.firstElementChild;
+      if (!$targetItem)
+        $targetItem = $focusedItem.parentElement.firstElementChild;
       if ($targetItem.classList.contains(configDividerClass)) {
         $targetItem = $targetItem.nextElementSibling;
       }
@@ -263,10 +281,13 @@ export default async function ({ web, components }, db) {
     focusPrevItem = (event) => {
       event.stopPropagation();
       event.preventDefault();
-      const $focusedItem = event.target.closest(`[class^="${configItemClass}"]`);
+      const $focusedItem = event.target.closest(
+        `[class^="${configItemClass}"]`
+      );
       if (!$focusedItem) return;
       let $targetItem = $focusedItem.previousElementSibling;
-      if (!$targetItem) $targetItem = $focusedItem.parentElement.lastElementChild;
+      if (!$targetItem)
+        $targetItem = $focusedItem.parentElement.lastElementChild;
       if ($targetItem.classList.contains(configDividerClass)) {
         $targetItem = $targetItem.previousElementSibling;
       }
@@ -321,7 +342,10 @@ export default async function ({ web, components }, db) {
         return web.html`<div class="${configDividerClass}"></div>`;
 
       const blockId = $collection.dataset.blockId,
-        storedState = await db.get(['collections', blockId, menuItem.key], menuItem.default),
+        storedState = await db.get(
+          ['collections', blockId, menuItem.key],
+          menuItem.default
+        ),
         $item = web.html`<div class="${configItemClass}-${menuItem.type}"></div>`;
 
       switch (menuItem.type) {
@@ -394,8 +418,10 @@ export default async function ({ web, components }, db) {
 
       const rect = $button.getBoundingClientRect();
       $position.style.left =
-        Math.min(rect.left + rect.width / 2, window.innerWidth - ($config.offsetWidth + 14)) +
-        'px';
+        Math.min(
+          rect.left + rect.width / 2,
+          window.innerWidth - ($config.offsetWidth + 14)
+        ) + 'px';
       $position.style.top =
         Math.min(
           rect.top + rect.height / 2,
@@ -406,7 +432,8 @@ export default async function ({ web, components }, db) {
       for (const { keys, listener, opts } of keyListeners) {
         web.addHotkeyListener(keys, listener, opts);
       }
-      await $config.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 }).finished;
+      await $config.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 })
+        .finished;
       $firstMenuItem.focus();
     };
   async function hideConfig() {
@@ -425,10 +452,13 @@ export default async function ({ web, components }, db) {
   }
 
   const simplifyCollection = async () => {
-    for (const $collection of document.querySelectorAll(collectionViewSelector)) {
+    for (const $collection of document.querySelectorAll(
+      collectionViewSelector
+    )) {
       const blockId = $collection.dataset.blockId,
         $addNew = $collection.querySelector(collectionAddNewSelector);
-      if ($collection.querySelector(`.${configButtonClass}`) || !$addNew) continue;
+      if ($collection.querySelector(`.${configButtonClass}`) || !$addNew)
+        continue;
 
       const $configButton = $addNew.previousElementSibling.cloneNode();
       $configButton.className = configButtonClass;
@@ -440,8 +470,14 @@ export default async function ({ web, components }, db) {
 
       for (const item of menuItems) {
         if (item.key === 'divider') continue;
-        const state = await db.get(['collections', blockId, item.key], item.default);
-        if ((item.type !== 'input' && !item.linkedOnly) || isLinked($collection)) {
+        const state = await db.get(
+          ['collections', blockId, item.key],
+          item.default
+        );
+        if (
+          (item.type !== 'input' && !item.linkedOnly) ||
+          isLinked($collection)
+        ) {
           setTweakState($collection, item.key, state);
         }
         if (state && item.action) item.action($collection, state);

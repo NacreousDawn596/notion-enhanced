@@ -4,7 +4,7 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-"use strict";
+'use strict';
 
 // batch event callbacks to avoid over-handling
 // and any conflicts / perf.issues that may
@@ -20,7 +20,7 @@ const sleep = async (ms) => {
     const next = () =>
       sleep(ms).then(() => {
         if (!update) return (delay = undefined);
-        update(), (update = undefined);
+        (update(), (update = undefined));
         delay = next();
       });
     return (...args) => {

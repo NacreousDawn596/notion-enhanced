@@ -1,12 +1,16 @@
 {
   "manifest_version": 3,
   "name": "notion-enhancer",
-  "version": "0.11.1",
+  "version": "0.15.0",
   "author": "dragonwocky <thedragonring.bod@gmail.com> (https://dragonwocky.me/)",
   "description": "Customise the all-in-one productivity workspace Notion.",
   "homepage_url": "https://notion-enhancer.github.io",
   "content_scripts": [{ "matches": ["*://*.notion.so/*"], "js": ["/init.js"] }],
-  "background": { "service_worker": "/worker.js" },
+  "background": {
+    "service_worker": "/worker.js",
+    "scripts": ["/worker.js"],
+    "type": "module"
+  },
   "action": {},
   "icons": {
     "16": "/assets/colour-x16.png",

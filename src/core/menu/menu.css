@@ -19,7 +19,7 @@
 *:focus-visible {
   outline: 3px solid var(--theme--accent-primary);
 }
-*:focus-visible[role="option"] {
+*:focus-visible[role='option'] {
   outline: none;
 }
 
@@ -75,7 +75,7 @@ body > #skeleton .shimmer.icon {
   width: 18px;
 }
 body > #skeleton .shimmer::before {
-  content: "";
+  content: '';
   position: absolute;
   height: 100%;
   width: 100%;

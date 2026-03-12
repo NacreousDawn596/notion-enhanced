@@ -5,7 +5,7 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-function LineNumbers({ decorationStyle = "None" }) {
+function LineNumbers({ decorationStyle = 'None' }) {
   const { html } = globalThis.__enhancerApi,
     decorations = {
       Border: `pr-[16px] border-r-([2px]
@@ -18,32 +18,32 @@ function LineNumbers({ decorationStyle = "None" }) {
     class="notion-enhancer--line-numbers mt-[34px]
     text-([85%] [var(--theme--fg-secondary)] right)
     font-[var(--font--code)] overflow-hidden select-none
-    relative flex-grow ${decorations[decorationStyle] || ""}"
+    relative flex-grow ${decorations[decorationStyle] || ''}"
   ></div>`;
 }
 
 export default async (api, db) => {
   const { html, addMutationListener } = api,
-    decorationStyle = await db.get("decorationStyle"),
-    numberSingleLines = await db.get("numberSingleLines"),
-    codeBlockSelector = ".notion-code-block.line-numbers > .notranslate";
+    decorationStyle = await db.get('decorationStyle'),
+    numberSingleLines = await db.get('numberSingleLines'),
+    codeBlockSelector = '.notion-code-block.line-numbers > .notranslate';
 
   // get character width in pixels
   const getCharWidth = ($elem) => {
       const $char = html`<span style="width:1ch"> </span>`;
       $elem.append($char);
-      const charWidth = getComputedStyle($char).getPropertyValue("width");
+      const charWidth = getComputedStyle($char).getPropertyValue('width');
       $char.remove();
       return parseFloat(charWidth);
     },
     // get line width in pixels
     getLineWidth = ($elem) =>
-      parseFloat(getComputedStyle($elem).getPropertyValue("width")) -
-      parseFloat(getComputedStyle($elem).getPropertyValue("padding-left")) -
-      parseFloat(getComputedStyle($elem).getPropertyValue("padding-right")),
+      parseFloat(getComputedStyle($elem).getPropertyValue('width')) -
+      parseFloat(getComputedStyle($elem).getPropertyValue('padding-left')) -
+      parseFloat(getComputedStyle($elem).getPropertyValue('padding-right')),
     // get line height in pixels
     getLineHeight = ($elem) =>
-      parseFloat(getComputedStyle($elem).getPropertyValue("line-height")),
+      parseFloat(getComputedStyle($elem).getPropertyValue('line-height')),
     // update inline styles without unnecessary dom updates
     applyStyles = ($elem, styles) => {
       for (const property in styles) {
@@ -54,25 +54,25 @@ export default async (api, db) => {
 
   const numberLines = () => {
     for (const $code of document.querySelectorAll(codeBlockSelector)) {
-      const wrap = $code.style.wordBreak === "break-all",
-        lines = $code.innerText.split("\n"),
+      const wrap = $code.style.wordBreak === 'break-all',
+        lines = $code.innerText.split('\n'),
         numLines = Math.max(lines.length - 1, 1),
-        numChars = lines.map((line) => line.length).join(","),
+        numChars = lines.map((line) => line.length).join(','),
         numDigits = (Math.log(numLines) * Math.LOG10E + 1) | 0;
 
-      if ($code.dataset.lines === wrap + "," + numChars) continue;
-      $code.dataset.lines = wrap + "," + numChars;
+      if ($code.dataset.lines === wrap + ',' + numChars) continue;
+      $code.dataset.lines = wrap + ',' + numChars;
 
       // do not add to single-line blocks if disabled
       const visible = numberSingleLines || numLines > 1,
         width = visible
-          ? decorationStyle === "Border"
+          ? decorationStyle === 'Border'
             ? `calc(100% - 50px - ${numDigits}ch)`
             : `calc(100% - 32px - ${numDigits}ch)`
-          : "",
-        paddingLeft = visible && decorationStyle === "Border" ? "16px" : "32px";
+          : '',
+        paddingLeft = visible && decorationStyle === 'Border' ? '16px' : '32px';
       // shrink block to allow space for numbers
-      applyStyles($code.parentElement, { justifyContent: "flex-end" });
+      applyStyles($code.parentElement, { justifyContent: 'flex-end' });
       applyStyles($code, { minWidth: width, maxWidth: width, paddingLeft });
 
       // calculate heights of wrapped lines and render line nums
@@ -91,13 +91,13 @@ export default async (api, db) => {
         totalHeight += wrappedHeight;
       }
       applyStyles($code._$lineNumbers, {
-        display: visible ? "" : "none",
+        display: visible ? '' : 'none',
         height: `${totalHeight}px`,
       });
 
       if (visible && !document.contains($code._$lineNumbers)) {
         $code.before($code._$lineNumbers);
-      } else if (!visible) $code._$lineNumbers.style.display = "none";
+      } else if (!visible) $code._$lineNumbers.style.display = 'none';
     }
   };
 

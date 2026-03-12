@@ -4,9 +4,9 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-"use strict";
+'use strict';
 
-const IS_ELECTRON = typeof module !== "undefined";
+const IS_ELECTRON = typeof module !== 'undefined';
 
 let __db, __statements, __transactions;
 const initDatabase = async () => {
@@ -22,11 +22,11 @@ const initDatabase = async () => {
     // - $profileId__enabledMods: ($modId) -> boolean
     // - $profileId__$modId: ($optionKey) -> value
 
-    const table = "kvstore",
-      { app } = require("electron"),
-      { resolve } = require("path"),
-      sqlite = require("better-sqlite3"),
-      db = sqlite(resolve(`${app.getPath("userData")}/notion-enhancer.db`)),
+    const table = 'kvstore',
+      { app } = require('electron'),
+      { resolve } = require('path'),
+      sqlite = require('better-sqlite3'),
+      db = sqlite(resolve(`${app.getPath('userData')}/notion-enhancer.db`)),
       init = db.prepare(`CREATE TABLE IF NOT EXISTS ${table} (
         key     TEXT PRIMARY KEY,
         value   TEXT
@@ -55,15 +55,15 @@ const initDatabase = async () => {
     return db;
   },
   queryDatabase = async (namespace, query, args) => {
-    namespace ??= "";
-    if (Array.isArray(namespace)) namespace = namespace.join("__");
-    if (namespace?.length) namespace += "__";
+    namespace ??= '';
+    if (Array.isArray(namespace)) namespace = namespace.join('__');
+    if (namespace?.length) namespace += '__';
     const namespaceify = (key) =>
       key.startsWith(namespace) ? key : namespace + key;
 
     await (__db ??= initDatabase());
     switch (query) {
-      case "get": {
+      case 'get': {
         const key = namespaceify(args.key);
         let value;
         if (IS_ELECTRON) {
@@ -73,7 +73,7 @@ const initDatabase = async () => {
         } else value = (await chrome.storage.local.get([key]))[key];
         return value ?? args.fallbacks?.[args.key];
       }
-      case "set": {
+      case 'set': {
         const key = namespaceify(args.key),
           value = args.value;
         return IS_ELECTRON
@@ -81,7 +81,7 @@ const initDatabase = async () => {
             (__transactions.set({ [key]: JSON.stringify(value) }), true)
           : chrome.storage.local.set({ [key]: value });
       }
-      case "remove": {
+      case 'remove': {
         let { keys } = args;
         if (!Array.isArray(args.keys)) keys = [keys];
         keys = keys.map(namespaceify);
@@ -89,7 +89,7 @@ const initDatabase = async () => {
           ? (__transactions.remove(keys), true)
           : chrome.storage.local.remove(keys);
       }
-      case "export": {
+      case 'export': {
         // returns key/value pairs within scope w/out namespace
         // prefix e.g. to streamline importing from one profile and
         // then into another (where a diff. namespace is used)
@@ -101,7 +101,7 @@ const initDatabase = async () => {
           .map(([key, value]) => [key.slice(namespace.length), value]);
         return Object.fromEntries(entries);
       }
-      case "import": {
+      case 'import': {
         let entries = Object.entries(args.obj);
         entries = entries.map(([key, value]) => [namespace + key, value]);
         entries = Object.fromEntries(entries);
@@ -114,14 +114,14 @@ const initDatabase = async () => {
 
 if (IS_ELECTRON) {
   const { reloadApp, enhancerUrl } = globalThis.__enhancerApi,
-    { ipcMain, session, app, net } = require("electron");
-  app.on("ready", () => {
+    { ipcMain, session, app, net } = require('electron');
+  app.on('ready', () => {
     // proxies notion-enhancer sources over www.notion.so via https
-    const { protocol } = session.fromPartition("persist:notion");
-    protocol.handle("https", (req) => {
+    const { protocol } = session.fromPartition('persist:notion');
+    protocol.handle('https', (req) => {
       if (req.url.startsWith(enhancerUrl())) {
         let url = req.url.slice(enhancerUrl().length);
-        url = `file://${require("path").join(__dirname, url)}`;
+        url = `file://${require('path').join(__dirname, url)}`;
         return net.fetch(url);
       } else return net.fetch(req);
     });
@@ -130,22 +130,22 @@ if (IS_ELECTRON) {
     //   return callback({ responseHeaders });
     // });
 
-    ipcMain.handle("notion-enhancer", ({}, message) => {
-      if (message?.action !== "query-database") return;
+    ipcMain.handle('notion-enhancer', ({}, message) => {
+      if (message?.action !== 'query-database') return;
       const { namespace, query, args } = message.data;
       return queryDatabase(namespace, query, args);
     });
-    ipcMain.on("notion-enhancer", ({}, message) => {
-      if (message === "reload-app") reloadApp();
+    ipcMain.on('notion-enhancer', ({}, message) => {
+      if (message === 'reload-app') reloadApp();
     });
   });
 } else {
-  const notionUrl = "https://www.notion.so/",
+  const notionUrl = 'https://www.notion.so/',
     isNotionTab = (tab) => tab?.url?.startsWith(notionUrl);
 
   const connectedTabs = new Set(),
     openMenuInTabs = new Set(),
-    openMenu = { channel: "notion-enhancer", message: "open-menu" },
+    openMenu = { channel: 'notion-enhancer', message: 'open-menu' },
     openEnhancerMenu = async (tab) => {
       if (!isNotionTab(tab)) {
         const windowId = chrome.windows.WINDOW_ID_CURRENT;
@@ -178,16 +178,16 @@ if (IS_ELECTRON) {
       if (!userScriptsAvailable()) return;
       // enhancer apis are not available in the worker in-browser,
       // manual steps are required to get nested values from the db
-      const key = "customScript",
-        matches = ["*://*.notion.so/*"],
-        coreId = "0f0bf8b6-eae6-4273-b307-8fc43f2ee082",
+      const key = 'customScript',
+        matches = ['*://*.notion.so/*'],
+        coreId = '0f0bf8b6-eae6-4273-b307-8fc43f2ee082',
         profileId =
-          (await queryDatabase([], "get", { key: "activeProfile" })) ??
-          (await queryDatabase([], "get", { key: "profileIds" }))?.[0] ??
-          "default",
-        customScript = await queryDatabase([profileId, coreId], "get", { key }),
+          (await queryDatabase([], 'get', { key: 'activeProfile' })) ??
+          (await queryDatabase([], 'get', { key: 'profileIds' }))?.[0] ??
+          'default',
+        customScript = await queryDatabase([profileId, coreId], 'get', { key }),
         existingScripts = await chrome.userScripts.getScripts({ ids: [key] }),
-        code = customScript?.content || "";
+        code = customScript?.content || '';
       if (existingScripts[0]) {
         if (code === existingScripts[0]?.code) return;
         chrome.userScripts.update([{ id: key, matches, js: [{ code }] }]);
@@ -205,26 +205,26 @@ if (IS_ELECTRON) {
     const tabId = port.sender.tab.id;
     connectedTabs.add(tabId);
     port.onMessage.addListener(async (msg) => {
-      if (msg?.channel !== "notion-enhancer") return;
+      if (msg?.channel !== 'notion-enhancer') return;
       const { message, invocation } = msg;
-      if (message.action === "query-database") {
+      if (message.action === 'query-database') {
         const { namespace, query, args } = message.data,
           res = await queryDatabase(namespace, query, args);
         if (invocation) port.postMessage({ invocation, message: res });
         // re-register userscript on updates:
         // profile change, db import, file upload, file deletion
         const customScriptChanged =
-          query === "import" ||
-          (query === "set" &&
-            ["activeProfile", "customScript"].includes(args.key));
+          query === 'import' ||
+          (query === 'set' &&
+            ['activeProfile', 'customScript'].includes(args.key));
         if (customScriptChanged) registerCustomScript();
       }
-      if (message === "load-complete") {
+      if (message === 'load-complete') {
         if (!openMenuInTabs.has(tabId)) return;
         openMenuInTabs.delete(tabId);
         port.postMessage(openMenu);
       }
-      if (message === "reload-app") reloadNotionTabs();
+      if (message === 'reload-app') reloadNotionTabs();
     });
     port.onDisconnect.addListener(() => connectedTabs.delete(tabId));
   });

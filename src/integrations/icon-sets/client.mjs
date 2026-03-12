@@ -29,7 +29,8 @@ export default async function ({ web, fs, components, notion }, db) {
   }
 
   const enhancerIconSets = [],
-    enhancerIconsUrl = 'https://raw.githubusercontent.com/notion-enhancer/icons/main/';
+    enhancerIconsUrl =
+      'https://raw.githubusercontent.com/notion-enhancer/icons/main/';
   if (await db.get(['default_sets'])) {
     const iconsData = await fs.getJSON(`${enhancerIconsUrl}/icons.json`);
     enhancerIconSets.push(...(iconsData.icons || iconsData));
@@ -42,7 +43,11 @@ export default async function ({ web, fs, components, notion }, db) {
     tabBtnSelector = (n) =>
       `.notion-media-menu > :first-child > :first-child > :nth-child(${n})`;
 
-  const renderSetTitle = async (title, loadPromises = [], $tooltip = undefined) => {
+  const renderSetTitle = async (
+    title,
+    loadPromises = [],
+    $tooltip = undefined
+  ) => {
     const isCollapsed = await db.get(['collapsed', title], false),
       $title = web.html`<p class="icon_sets--title"
             ${isCollapsed ? 'data-collapsed="true"' : ''}></p>`,
@@ -180,7 +185,10 @@ export default async function ({ web, fs, components, notion }, db) {
               $img = sprite
                 ? web.html`<div class="icon_sets--sprite" ${sprite}></div>`
                 : web.html`<img src="${web.escape(iconUrl)}">`,
-              $icon = web.render(web.html`<span class="icon_sets--icon"></span>`, $img);
+              $icon = web.render(
+                web.html`<span class="icon_sets--icon"></span>`,
+                $img
+              );
             web.render($set, $icon);
             $icon.addEventListener('click', (event) => {
               if (!event.shiftKey) setIcon({ signed: iconUrl, url: iconUrl });
@@ -219,13 +227,19 @@ export default async function ({ web, fs, components, notion }, db) {
       },
       renderCustomIconSets = async () => {
         if (customIconSets.length) {
-          web.render($setsList, web.html`<div class="icon_sets--divider"></div>`);
+          web.render(
+            $setsList,
+            web.html`<div class="icon_sets--divider"></div>`
+          );
         }
         await Promise.all(customIconSets.map((set) => renderIconSet(set)));
       },
       renderEnhancerIconSets = async () => {
         if (enhancerIconSets.length) {
-          web.render($setsList, web.html`<div class="icon_sets--divider"></div>`);
+          web.render(
+            $setsList,
+            web.html`<div class="icon_sets--divider"></div>`
+          );
         }
         await Promise.all(
           enhancerIconSets.map((set) => {
@@ -273,7 +287,10 @@ export default async function ({ web, fs, components, notion }, db) {
 
       // call native setter, imitate human input
       const $notionLinkInput = $mediaMenu.querySelector(mediaLinkInputSelector),
-        proto = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
+        proto = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+        );
       proto.set.call($notionLinkInput, iconUrl);
       const inputEvent = new Event('input', { bubbles: true }),
         enterKeydownEvent = new KeyboardEvent('keydown', {

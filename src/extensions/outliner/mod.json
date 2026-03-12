@@ -3,9 +3,7 @@
   "version": "0.5.0",
   "id": "87e077cc-5402-451c-ac70-27cc4ae65546",
   "description": "Adds a table of contents to the side panel to overview and navigate the current page's headings and subheadings.",
-  "tags": [
-    "panel"
-  ],
+  "tags": ["panel"],
   "authors": [
     {
       "name": "dragonwocky",
@@ -38,7 +36,5 @@
       "value": true
     }
   ],
-  "clientScripts": [
-    "client.mjs"
-  ]
+  "clientScripts": ["client.mjs"]
 }

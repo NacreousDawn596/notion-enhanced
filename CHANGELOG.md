@@ -1,5 +1,23 @@
 # changelog
 
+## v0.15.0 (major release)
+The biggest update to the Notion Enhancer yet, introducing sweeping stability, testing, and native integration features!
+- **new**: Packaged the extension as a fully native, persistent Electron Desktop application on Linux using Nix flakes (`nix profile install .#`).
+- **new**: Rebuilt `notion.js` fetch wrappers with automatic exponential backoff retries to survive rate limiting and network 429/5xx errors.
+- **new**: Restructured the testing architecture from the ground up, implementing a massive 5-stage native `node:test` suite for APIs, Cores, Extensions, Integrations, and Scripts.
+- **new**: Stabilized core UI injections (`client.mjs`, `quick-note`) with robust try-catch boundaries to prevent rogue extension failures from ever crashing the app.
+- **new**: Hardened the extension build pipeline (`scripts/build-browser-extension.sh`) to block zip generation if automated testing (`npm test`), ESLint, or Prettier formatting fails.
+- **new**: Fixed cross-browser compatibility issues in Firefox by adding `background.scripts` fallback to MV3 `manifest.json`.
+
+### v0.11.1 (dev)
+
+- new: replaced `api-test.mjs` with a rigorous multi-stage testing framework using Node's native `node:test`, individually testing APIs, Core, Extensions, Integrations, and Scripts.
+- new: improved `notion.js` fetch wrappers with exponential backoff retries and explicit HTTP 429/5xx error handling to enhance Notion API compatibility.
+- new: added try-catch error boundaries around core UI injections and hardened `quick-note` logic.
+- new: integrated full code formatting runs and automated tests into the extension build script to ensure project stability.
+- new: configured ESLint and Prettier, completely formatting and linting the entire project source code for standardization.
+- fix: reconstructed missing API utility dependency (`src/api/index.mjs`).
+
 ### v0.11.0 (dev)
 
 a complete redesign & rewrite of the enhancer, with new features and a port to the browser as a chrome extension.

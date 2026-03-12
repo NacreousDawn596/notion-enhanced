@@ -14,7 +14,10 @@ export default async function ({ fmt }, db) {
         .split(',')
         .map((i) => parseInt(i));
     if (!(r === 46 && g === 170 && b === 220)) {
-      document.documentElement.style.setProperty('--light_plus--accent_blue', primary);
+      document.documentElement.style.setProperty(
+        '--light_plus--accent_blue',
+        primary
+      );
       document.documentElement.style.setProperty(
         '--light_plus--accent_blue-selection',
         `rgba(${r},${g},${b},0.2)`
@@ -41,7 +44,10 @@ export default async function ({ fmt }, db) {
         .split(',')
         .map((i) => parseInt(i));
     if (!(r === 235 && g === 87 && b === 87)) {
-      document.documentElement.style.setProperty('--light_plus--accent_red', secondary);
+      document.documentElement.style.setProperty(
+        '--light_plus--accent_red',
+        secondary
+      );
       document.documentElement.style.setProperty(
         '--light_plus--accent_red-button',
         `rgba(${r},${g},${b},0.2)`
@@ -60,7 +66,10 @@ export default async function ({ fmt }, db) {
         .split(',')
         .map((i) => parseFloat(i));
     if (!(r === 0 && g === 0 && b === 0 && a === 0)) {
-      document.documentElement.style.setProperty('--light_plus--accent_highlight', highlight);
+      document.documentElement.style.setProperty(
+        '--light_plus--accent_highlight',
+        highlight
+      );
       document.documentElement.style.setProperty(
         '--light_plus--accent_highlight-shaded',
         fmt.rgbLogShade(0.1, highlight)

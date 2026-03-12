@@ -9,13 +9,13 @@
 export default async (api, db) => {
   const $root = document.documentElement;
   for (const style of [
-    "sans",
-    "serif",
-    "mono",
-    "code",
-    "math",
-    "quotes",
-    "headings",
+    'sans',
+    'serif',
+    'mono',
+    'code',
+    'math',
+    'quotes',
+    'headings',
   ]) {
     const font = await db.get(style);
     if (font) $root.style.setProperty(`--font--${style}`, font);

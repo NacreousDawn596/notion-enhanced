@@ -32,7 +32,7 @@ export default (async () => {
 
   if (!IS_MENU && !IS_TABS) {
     if (!signedIn || !pageLoaded) return;
-    console.log("notion-enhancer: loading...");
+    console.log('notion-enhancer: loading...');
   }
 
   // in electron, iframes cannot access node
@@ -51,22 +51,22 @@ export default (async () => {
   // the dom must be re-imported
 
   await Promise.all([
-    IS_ELECTRON || import(enhancerUrl("api/registry.js")),
-    import(enhancerUrl("api/interface.mjs")),
-    import(enhancerUrl("api/state.js")),
+    IS_ELECTRON || import(enhancerUrl('api/registry.js')),
+    import(enhancerUrl('api/interface.mjs')),
+    import(enhancerUrl('api/state.js')),
   ]);
 
   const { getMods, isEnabled, modDatabase } = globalThis.__enhancerApi;
   for (const mod of await getMods()) {
     if (!(await isEnabled(mod.id))) continue;
-    const isCore = mod._src === "core",
-      isTheme = mod._src.startsWith("themes/");
+    const isCore = mod._src === 'core',
+      isTheme = mod._src.startsWith('themes/');
     if (IS_MENU && !(isCore || isTheme)) continue;
 
     // clientStyles
     for (let stylesheet of mod.clientStyles ?? []) {
-      const $stylesheet = document.createElement("link");
-      $stylesheet.rel = "stylesheet";
+      const $stylesheet = document.createElement('link');
+      $stylesheet.rel = 'stylesheet';
       $stylesheet.href = enhancerUrl(`${mod._src}/${stylesheet}`);
       document.head.append($stylesheet);
     }
@@ -90,7 +90,7 @@ export default (async () => {
     globalThis.__enhancerApi.onReady?.();
   }
   return CORE_LOADED.then(() => {
-    if (IS_MENU) console.log("notion-enhancer: ready");
+    if (IS_MENU) console.log('notion-enhancer: ready');
     return globalThis.__enhancerApi;
   });
 })();

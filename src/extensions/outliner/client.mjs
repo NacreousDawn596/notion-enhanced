@@ -5,26 +5,26 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Heading } from "./islands/Heading.mjs";
-import { PanelDescription } from "./islands/PanelDescription.mjs";
+import { Heading } from './islands/Heading.mjs';
+import { PanelDescription } from './islands/PanelDescription.mjs';
 
 export default async (api, db) => {
   const { html, debounce, addMutationListener, addPanelView } = api,
-    behavior = (await db.get("smoothScrolling")) ? "smooth" : "auto",
-    scroller = ".notion-frame .notion-scroller",
-    equation = ".notion-text-equation-token",
-    annotation = (await db.get("equationRendering"))
-      ? ".katex-html"
-      : ".katex-mathml annotation",
-    page = ".notion-page-content",
+    behavior = (await db.get('smoothScrolling')) ? 'smooth' : 'auto',
+    scroller = '.notion-frame .notion-scroller',
+    equation = '.notion-text-equation-token',
+    annotation = (await db.get('equationRendering'))
+      ? '.katex-html'
+      : '.katex-mathml annotation',
+    page = '.notion-page-content',
     headings = [
-      ".notion-header-block",
-      ".notion-sub_header-block",
-      ".notion-sub_sub_header-block",
+      '.notion-header-block',
+      '.notion-sub_header-block',
+      '.notion-sub_sub_header-block',
     ],
     $toc = html`<div></div>`;
   addPanelView({
-    title: "Outliner",
+    title: 'Outliner',
     // prettier-ignore
     $icon: html`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
       <circle cx="5" cy="7" r="2.8"/>
@@ -40,30 +40,32 @@ export default async (api, db) => {
     </section>`,
   });
 
-  const replaceFloatingOutline = await db.get("replaceFloatingOutline");
+  const replaceFloatingOutline = await db.get('replaceFloatingOutline');
   if (replaceFloatingOutline) {
-    document.head.append(html`<style>
-      .hide-scrollbar.ignore-scrolling-container:has(
-          div:empty[style*="width"]
-        ) {
-        display: none !important;
-      }
-    </style>`);
+    document.head.append(
+      html`<style>
+        .hide-scrollbar.ignore-scrolling-container:has(
+            div:empty[style*='width']
+          ) {
+          display: none !important;
+        }
+      </style>`
+    );
   }
 
   let $page, $scroller;
   const getHeadings = () => {
       if (!$page) return [];
-      return [...$page.querySelectorAll(headings.join(", "))];
+      return [...$page.querySelectorAll(headings.join(', '))];
     },
     getHeadingLevel = ($heading) => {
       for (let i = 0; i < headings.length; i++)
         if ($heading.matches(headings[i])) return i + 1;
     },
     getHeadingTitle = ($heading) => {
-      if (!$heading.innerText) return "Untitled";
-      let title = "";
-      for (const node of $heading.querySelector("h2, h3, h4").childNodes) {
+      if (!$heading.innerText) return 'Untitled';
+      let title = '';
+      for (const node of $heading.querySelector('h2, h3, h4').childNodes) {
         if (node.nodeType === 3) title += node.textContent;
         else if (node.matches(equation)) {
           // https://github.com/notion-enhancer/repo/issues/39
@@ -75,14 +77,14 @@ export default async (api, db) => {
     },
     getBlockOffset = ($block) => {
       let offset = 0;
-      while (!$block?.matches("[data-content-editable-root]")) {
+      while (!$block?.matches('[data-content-editable-root]')) {
         offset += $block.offsetTop;
         $block = $block.offsetParent;
       }
       return offset;
     },
     updateHeadings = debounce(() => {
-      $toc.innerHTML = "";
+      $toc.innerHTML = '';
       if (!$page) return;
       let indent = 0,
         prev_level = 0;
@@ -123,8 +125,8 @@ export default async (api, db) => {
       if (document.contains($page)) return;
       $page = document.querySelector(page);
       $scroller = document.querySelector(scroller);
-      $scroller?.removeEventListener("scroll", onScroll);
-      $scroller?.addEventListener("scroll", onScroll);
+      $scroller?.removeEventListener('scroll', onScroll);
+      $scroller?.addEventListener('scroll', onScroll);
       updateHeadings();
     };
 

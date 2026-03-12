@@ -11,7 +11,10 @@ export default async function ({ web, env }, db) {
     imgEmojiSelector = '.notion-emoji:not([data-emoji-sets-unsupported])',
     imgEmojiOverlaySelector = `${imgEmojiSelector} + [src*="notion-emojis"]`;
 
-  await Promise.any([web.whenReady([nativeEmojiSelector]), web.whenReady([imgEmojiSelector])]);
+  await Promise.any([
+    web.whenReady([nativeEmojiSelector]),
+    web.whenReady([imgEmojiSelector]),
+  ]);
 
   const nativeEmojis = document.querySelectorAll(nativeEmojiSelector).length,
     imgEmojis = document.querySelectorAll(imgEmojiSelector).length;
@@ -23,7 +26,10 @@ export default async function ({ web, env }, db) {
       if (unsupportedEmojis.includes(emoji)) return undefined;
       try {
         if (!emojiReqs.get(emoji)) {
-          emojiReqs.set(emoji, fetch(`https://emojicdn.elk.sh/${emoji}?style=${style}`));
+          emojiReqs.set(
+            emoji,
+            fetch(`https://emojicdn.elk.sh/${emoji}?style=${style}`)
+          );
         }
         const res = await emojiReqs.get(emoji);
         if (!res.ok) throw new Error();
@@ -66,6 +72,9 @@ export default async function ({ web, env }, db) {
       }
     };
     updateEmojis();
-    web.addDocumentObserver(updateEmojis, [imgEmojiSelector, imgEmojiOverlaySelector]);
+    web.addDocumentObserver(updateEmojis, [
+      imgEmojiSelector,
+      imgEmojiOverlaySelector,
+    ]);
   }
 }

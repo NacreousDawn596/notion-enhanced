@@ -20,7 +20,7 @@
   --dracula--selection: #44475a;
   --dracula--block_highlight: #44475a75;
 
-  --dracula--light_gray: #CFCFCF;
+  --dracula--light_gray: #cfcfcf;
   --dracula--gray: var(--dracula--fg_dark);
   --dracula--brown: #6272a4;
   --dracula--orange: #ffb86c;
@@ -31,7 +31,7 @@
   --dracula--pink: #ff79c6;
   --dracula--red: #ff5555;
 
-  --dracula--bg_light_gray: #71737E;
+  --dracula--bg_light_gray: #71737e;
   --dracula--bg_gray: var(--dracula--bg_light);
   --dracula--bg_brown: #465079;
   --dracula--bg_orange: #8a6345;

@@ -4,14 +4,14 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Heading } from "./Heading.mjs";
-import { Description } from "./Description.mjs";
-import { Checkbox } from "./Checkbox.mjs";
-import { Button } from "./Button.mjs";
-import { Tile } from "./Tile.mjs";
+import { Heading } from './Heading.mjs';
+import { Description } from './Description.mjs';
+import { Checkbox } from './Checkbox.mjs';
+import { Button } from './Button.mjs';
+import { Tile } from './Tile.mjs';
 
-const privacyPolicy = "https://notion-enhancer.github.io/about/privacy-policy/",
-  tsAndCs = "https://notion-enhancer.github.io/about/terms-and-conditions/";
+const privacyPolicy = 'https://notion-enhancer.github.io/about/privacy-policy/',
+  tsAndCs = 'https://notion-enhancer.github.io/about/terms-and-conditions/';
 
 function Onboarding() {
   const { html, setState, useState } = globalThis.__enhancerApi,
@@ -56,7 +56,7 @@ function Onboarding() {
     </div>`;
   $submitAgreement.onclick = async () => {
     if ($submitAgreement.disabled) return;
-    await initDatabase().set("agreedToTerms", version);
+    await initDatabase().set('agreedToTerms', version);
     setState({ rerender: true });
   };
 
@@ -95,11 +95,11 @@ function Onboarding() {
         <//>
       </div>
     `;
-  useState(["rerender"], async () => {
-    const agreedToTerms = await initDatabase().get("agreedToTerms");
-    $agreeToTerms.style.display = agreedToTerms === version ? "none" : "";
-    $regularGreeting.style.display = agreedToTerms === version ? "" : "none";
-    $featuredSponsors.style.display = agreedToTerms === version ? "" : "none";
+  useState(['rerender'], async () => {
+    const agreedToTerms = await initDatabase().get('agreedToTerms');
+    $agreeToTerms.style.display = agreedToTerms === version ? 'none' : '';
+    $regularGreeting.style.display = agreedToTerms === version ? '' : 'none';
+    $featuredSponsors.style.display = agreedToTerms === version ? '' : 'none';
   });
 
   return html`${$agreeToTerms}${$regularGreeting}`;

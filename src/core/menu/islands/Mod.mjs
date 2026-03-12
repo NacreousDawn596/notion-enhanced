@@ -4,8 +4,8 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Description } from "./Description.mjs";
-import { Toggle } from "./Toggle.mjs";
+import { Description } from './Description.mjs';
+import { Toggle } from './Toggle.mjs';
 
 function Mod({
   id,
@@ -36,7 +36,7 @@ function Mod({
           src="${enhancerUrl(`${_src}/${thumbnail}`)}"
           class="rounded-[4px] mr-[12px] h-[74px] aspect-video my-auto"
         />`
-      : ""}
+      : ''}
     <div class="flex-(~ col) w-full">
       <div class="flex flex-wrap items-center gap-[8px] text-[14px] mb-[5px]">
         <h3 class="my-0">${name}</h3>
@@ -68,12 +68,12 @@ function Mod({
             duration-[20ms] hover:bg-[color:var(--theme--bg-hover)]
             active:text-[color:var(--theme--fg-primary)]"
             onclick=${() => {
-              setState({ transition: "slide-to-right", view: id });
+              setState({ transition: 'slide-to-right', view: id });
             }}
           >
             <i class="i-settings size-[18px]"></i>
           </button>`
-        : ""}
+        : ''}
       <div class="my-auto scale-[1.15]">
         <${Toggle} id=${toggleId} ...${{ _get, _set }} />
       </div>

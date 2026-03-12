@@ -5,24 +5,24 @@
  */
 
 let _release;
-const repo = "notion-enhancer/notion-enhancer",
+const repo = 'notion-enhancer/notion-enhancer',
   endpoint = `https://api.github.com/repos/${repo}/releases/latest`,
   getRelease = async () => {
     const { version, readJson } = globalThis.__enhancerApi;
     try {
-      _release ??= (await readJson(endpoint))?.tag_name.replace(/^v/, "");
+      _release ??= (await readJson(endpoint))?.tag_name.replace(/^v/, '');
     } catch {}
     _release ??= version;
     return _release;
   };
 
 const parseVersion = (semver) => {
-    while (semver.split("-")[0].split(".").length < 3) semver = `0.${semver}`;
-    let [major, minor, patch, build] = semver.split("."),
-      prerelease = patch.split("-")[1]?.split(".")[0];
-    patch = patch.split("-")[0];
+    while (semver.split('-')[0].split('.').length < 3) semver = `0.${semver}`;
+    let [major, minor, patch, build] = semver.split('.'),
+      prerelease = patch.split('-')[1]?.split('.')[0];
+    patch = patch.split('-')[0];
     return [major, minor, patch, prerelease, build]
-      .map((v) => v ?? "")
+      .map((v) => v ?? '')
       .map((v) => (/^\d+$/.test(v) ? parseInt(v) : v));
   },
   // is a < b

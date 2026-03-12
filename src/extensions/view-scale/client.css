@@ -39,13 +39,15 @@
   border-radius: 9999px;
   border: 0px;
   background: var(--theme--ui_toggle-on);
-  box-shadow: -100px 0 0 90px var(--theme--ui_toggle-on),
+  box-shadow:
+    -100px 0 0 90px var(--theme--ui_toggle-on),
     inset 0 0 0 20px var(--theme--ui_toggle-on);
   transition: 0.2s;
 }
 .view_scale--slider:active::-webkit-slider-thumb {
   background: var(--theme--ui_toggle-feature);
-  box-shadow: -100px 0 0 90px var(--theme--ui_toggle-on),
+  box-shadow:
+    -100px 0 0 90px var(--theme--ui_toggle-on),
     inset 0 0 0 2px var(--theme--ui_toggle-on);
 }
 

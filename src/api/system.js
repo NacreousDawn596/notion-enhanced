@@ -4,29 +4,29 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-"use strict";
+'use strict';
 
-const IS_ELECTRON = typeof module !== "undefined",
-  IS_RENDERER = IS_ELECTRON && process.type === "renderer";
+const IS_ELECTRON = typeof module !== 'undefined',
+  IS_RENDERER = IS_ELECTRON && process.type === 'renderer';
 
 // expected values: 'linux', 'win32', 'darwin' (== macos), 'firefox'
 // and 'chromium' (inc. chromium-based browsers like edge and brave)
 // other possible values: 'aix', 'freebsd', 'openbsd', 'sunos'
 const platform = IS_ELECTRON
     ? process.platform
-    : navigator.userAgent.includes("Firefox")
-    ? "firefox"
-    : "chromium",
+    : navigator.userAgent.includes('Firefox')
+      ? 'firefox'
+      : 'chromium',
   // currently installed version of the notion-enhancer
   version = IS_ELECTRON
-    ? require("notion-enhancer/package.json").version
+    ? require('notion-enhancer/package.json').version
     : chrome.runtime.getManifest().version,
   // packages a url to access notion-enhancer assets and sources,
   // proxies via api in desktop app to bypass service worker cache
-  enhancerUrl = (target = "") =>
+  enhancerUrl = (target = '') =>
     IS_ELECTRON
-      ? "https://www.notion.so/api/__notion-enhancer/" +
-        target.replace(/^\//, "")
+      ? 'https://www.notion.so/api/__notion-enhancer/' +
+        target.replace(/^\//, '')
       : chrome.runtime.getURL(target),
   // require a file from the root of notion's app/ folder,
   // only available in an electron main process
@@ -42,7 +42,7 @@ const connectToPort = () => {
   onMessage = (channel, listener) => {
     // from worker to client
     if (IS_RENDERER) {
-      const { ipcRenderer } = require("electron");
+      const { ipcRenderer } = require('electron');
       ipcRenderer.on(channel, (event, message) => listener(message));
     } else if (!IS_ELECTRON) {
       const onMessage = (msg) => {
@@ -57,7 +57,7 @@ const connectToPort = () => {
   sendMessage = (channel, message) => {
     // to worker from client
     if (IS_RENDERER) {
-      const { ipcRenderer } = require("electron");
+      const { ipcRenderer } = require('electron');
       ipcRenderer.send(channel, message);
     } else if (!IS_ELECTRON) {
       connectToPort();
@@ -68,7 +68,7 @@ const connectToPort = () => {
     // sends a payload to the worker/main
     // process and waits for a response
     if (IS_RENDERER) {
-      const { ipcRenderer } = require("electron");
+      const { ipcRenderer } = require('electron');
       return ipcRenderer.invoke(channel, message);
     } else if (!IS_ELECTRON) {
       // polyfills the electron.ipcRenderer.invoke method in
@@ -92,12 +92,12 @@ const readFile = (file) => {
     if (IS_ELECTRON) {
       // read directly from filesys if possible,
       // treating notion-enhancer/src as fs root
-      if (!file.startsWith("http")) {
-        const fsp = require("fs/promises"),
-          { resolve } = require("path");
-        return fsp.readFile(resolve(`${__dirname}/../${file}`), "utf-8");
+      if (!file.startsWith('http')) {
+        const fsp = require('fs/promises'),
+          { resolve } = require('path');
+        return fsp.readFile(resolve(`${__dirname}/../${file}`), 'utf-8');
       }
-    } else file = file.startsWith("http") ? file : enhancerUrl(file);
+    } else file = file.startsWith('http') ? file : enhancerUrl(file);
     return fetch(file).then((res) => res.text());
   },
   readJson = (file) => {
@@ -105,11 +105,11 @@ const readFile = (file) => {
     // and res.json() instead of res.text() to return
     // json content of file in object form
     if (IS_ELECTRON) {
-      if (!file.startsWith("http")) {
-        const { resolve } = require("path");
+      if (!file.startsWith('http')) {
+        const { resolve } = require('path');
         return require(resolve(`${__dirname}/../${file}`));
       }
-    } else file = file.startsWith("http") ? file : enhancerUrl(file);
+    } else file = file.startsWith('http') ? file : enhancerUrl(file);
     return fetch(file).then((res) => res.json());
   };
 
@@ -120,23 +120,23 @@ const initDatabase = (namespace, fallbacks = {}) => {
     const query = (query, args = {}) =>
       IS_ELECTRON && !IS_RENDERER
         ? globalThis.__enhancerApi.queryDatabase(namespace, query, args)
-        : invokeInWorker("notion-enhancer", {
-            action: "query-database",
+        : invokeInWorker('notion-enhancer', {
+            action: 'query-database',
             data: { namespace, query, args },
           });
     return {
-      get: (key) => query("get", { key, fallbacks }),
-      set: (key, value) => query("set", { key, value }),
-      remove: (keys) => query("remove", { keys }),
-      export: () => query("export"),
-      import: (obj) => query("import", { obj }),
+      get: (key) => query('get', { key, fallbacks }),
+      set: (key, value) => query('set', { key, value }),
+      remove: (keys) => query('remove', { keys }),
+      export: () => query('export'),
+      import: (obj) => query('import', { obj }),
     };
   },
   reloadApp = () => {
     if (IS_ELECTRON && !IS_RENDERER) {
-      const { app } = require("electron");
-      app.relaunch(), app.exit();
-    } else sendMessage("notion-enhancer", "reload-app");
+      const { app } = require('electron');
+      (app.relaunch(), app.exit());
+    } else sendMessage('notion-enhancer', 'reload-app');
   };
 
 Object.assign((globalThis.__enhancerApi ??= {}), {

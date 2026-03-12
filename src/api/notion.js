@@ -36,15 +36,22 @@ const standardiseUUID = (uuid) => {
  * https://github.com/NotionX/react-notion-x/tree/master/packages/notion-types/src
  */
 export const get = async (id, table = 'block') => {
-  id = standardiseUUID(id);
-  const json = await fs.getJSON('https://www.notion.so/api/v3/getRecordValues', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ requests: [{ table, id }] }),
-    method: 'POST',
-  });
-  return json?.results?.[0]?.value || json;
+  try {
+    id = standardiseUUID(id);
+    const json = await fs.getJSON(
+      'https://www.notion.so/api/v3/getRecordValues',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ requests: [{ table, id }] }),
+        method: 'POST',
+      }
+    );
+    return json?.results?.[0]?.value || json;
+  } catch (err) {
+    return { errorId: 'network_error', message: err.message };
+  }
 };
 
 /**
@@ -60,7 +67,8 @@ export const getUserID = () =>
  */
 export const getPageID = () =>
   standardiseUUID(
-    web.queryParams().get('p') || location.pathname.split(/(-|\/)/g).reverse()[0]
+    web.queryParams().get('p') ||
+      location.pathname.split(/(-|\/)/g).reverse()[0]
   );
 
 let _spaceID;
@@ -69,7 +77,10 @@ let _spaceID;
  * @returns {string} uuidv4 space id
  */
 export const getSpaceID = async () => {
-  if (!_spaceID) _spaceID = (await get(getPageID())).space_id;
+  if (!_spaceID) {
+    const res = await get(getPageID());
+    if (res && res.space_id) _spaceID = res.space_id;
+  }
   return _spaceID;
 };
 
@@ -85,34 +96,42 @@ export const getSpaceID = async () => {
  * @returns {object} the number of total results, the list of matches, and related record values.
  * type definitions can be found here: https://github.com/NotionX/react-notion-x/blob/master/packages/notion-types/src/api.ts
  */
-export const search = async (query = '', limit = 20, spaceID = getSpaceID()) => {
-  spaceID = standardiseUUID(await spaceID);
-  const json = await fs.getJSON('https://www.notion.so/api/v3/search', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      type: 'BlocksInSpace',
-      query,
-      spaceId: spaceID,
-      limit,
-      filters: {
-        isDeletedOnly: false,
-        excludeTemplates: false,
-        isNavigableOnly: false,
-        requireEditPermissions: false,
-        ancestors: [],
-        createdBy: [],
-        editedBy: [],
-        lastEditedTime: {},
-        createdTime: {},
+export const search = async (
+  query = '',
+  limit = 20,
+  spaceID = getSpaceID()
+) => {
+  try {
+    spaceID = standardiseUUID(await spaceID);
+    const json = await fs.getJSON('https://www.notion.so/api/v3/search', {
+      headers: {
+        'Content-Type': 'application/json',
       },
-      sort: 'Relevance',
-      source: 'quick_find',
-    }),
-    method: 'POST',
-  });
-  return json;
+      body: JSON.stringify({
+        type: 'BlocksInSpace',
+        query,
+        spaceId: spaceID,
+        limit,
+        filters: {
+          isDeletedOnly: false,
+          excludeTemplates: false,
+          isNavigableOnly: false,
+          requireEditPermissions: false,
+          ancestors: [],
+          createdBy: [],
+          editedBy: [],
+          lastEditedTime: {},
+          createdTime: {},
+        },
+        sort: 'Relevance',
+        source: 'quick_find',
+      }),
+      method: 'POST',
+    });
+    return json;
+  } catch (err) {
+    return { errorId: 'network_error', message: err.message };
+  }
 };
 
 /**
@@ -157,36 +176,43 @@ export const set = async (
   { recordID, recordTable = 'block', spaceID = getSpaceID(), path = [] },
   recordValue = {}
 ) => {
-  spaceID = standardiseUUID(await spaceID);
-  recordID = standardiseUUID(recordID);
-  const json = await fs.getJSON('https://www.notion.so/api/v3/saveTransactions', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      requestId: fmt.uuidv4(),
-      transactions: [
-        {
-          id: fmt.uuidv4(),
-          spaceId: spaceID,
-          operations: [
+  try {
+    spaceID = standardiseUUID(await spaceID);
+    recordID = standardiseUUID(recordID);
+    const json = await fs.getJSON(
+      'https://www.notion.so/api/v3/saveTransactions',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requestId: fmt.uuidv4(),
+          transactions: [
             {
-              pointer: {
-                table: recordTable,
-                id: recordID,
-                spaceId: spaceID,
-              },
-              path,
-              command: path.length ? 'set' : 'update',
-              args: recordValue,
+              id: fmt.uuidv4(),
+              spaceId: spaceID,
+              operations: [
+                {
+                  pointer: {
+                    table: recordTable,
+                    id: recordID,
+                    spaceId: spaceID,
+                  },
+                  path,
+                  command: path.length ? 'set' : 'update',
+                  args: recordValue,
+                },
+              ],
             },
           ],
-        },
-      ],
-    }),
-    method: 'POST',
-  });
-  return json.errorId ? json : true;
+        }),
+        method: 'POST',
+      }
+    );
+    return json.errorId ? json : true;
+  } catch (err) {
+    return { errorId: 'network_error', message: err.message };
+  }
 };
 
 /**
@@ -226,82 +252,91 @@ export const create = async (
     userID = getUserID(),
   } = {}
 ) => {
-  spaceID = standardiseUUID(await spaceID);
-  parentID = standardiseUUID(parentID);
-  siblingID = standardiseUUID(siblingID);
-  const recordID = standardiseUUID(recordValue?.id ?? fmt.uuidv4()),
-    path = [],
-    args = {
-      type: 'text',
-      id: recordID,
-      version: 0,
-      created_time: new Date().getTime(),
-      last_edited_time: new Date().getTime(),
-      parent_id: parentID,
-      parent_table: parentTable,
-      alive: true,
-      created_by_table: 'notion_user',
-      created_by_id: userID,
-      last_edited_by_table: 'notion_user',
-      last_edited_by_id: userID,
-      space_id: spaceID,
-      permissions: [{ type: 'user_permission', role: 'editor', user_id: userID }],
-    };
-  if (parentTable === 'space') {
-    parentID = spaceID;
-    args.parent_id = spaceID;
-    path.push('pages');
-    args.type = 'page';
-  } else if (parentTable === 'collection_view') {
-    path.push('page_sort');
-    args.type = 'page';
-  } else {
-    path.push('content');
-  }
-  const json = await fs.getJSON('https://www.notion.so/api/v3/saveTransactions', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      requestId: fmt.uuidv4(),
-      transactions: [
-        {
-          id: fmt.uuidv4(),
-          spaceId: spaceID,
-          operations: [
+  try {
+    spaceID = standardiseUUID(await spaceID);
+    parentID = standardiseUUID(parentID);
+    siblingID = standardiseUUID(siblingID);
+    const recordID = standardiseUUID(recordValue?.id ?? fmt.uuidv4()),
+      path = [],
+      args = {
+        type: 'text',
+        id: recordID,
+        version: 0,
+        created_time: new Date().getTime(),
+        last_edited_time: new Date().getTime(),
+        parent_id: parentID,
+        parent_table: parentTable,
+        alive: true,
+        created_by_table: 'notion_user',
+        created_by_id: userID,
+        last_edited_by_table: 'notion_user',
+        last_edited_by_id: userID,
+        space_id: spaceID,
+        permissions: [
+          { type: 'user_permission', role: 'editor', user_id: userID },
+        ],
+      };
+    if (parentTable === 'space') {
+      parentID = spaceID;
+      args.parent_id = spaceID;
+      path.push('pages');
+      args.type = 'page';
+    } else if (parentTable === 'collection_view') {
+      path.push('page_sort');
+      args.type = 'page';
+    } else {
+      path.push('content');
+    }
+    const json = await fs.getJSON(
+      'https://www.notion.so/api/v3/saveTransactions',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requestId: fmt.uuidv4(),
+          transactions: [
             {
-              pointer: {
-                table: parentTable,
-                id: parentID,
-                spaceId: spaceID,
-              },
-              path,
-              command: prepend ? 'listBefore' : 'listAfter',
-              args: {
-                ...(siblingID ? { after: siblingID } : {}),
-                id: recordID,
-              },
-            },
-            {
-              pointer: {
-                table: recordTable,
-                id: recordID,
-                spaceId: spaceID,
-              },
-              path: [],
-              command: 'set',
-              args: {
-                ...args,
-                ...recordValue,
-              },
+              id: fmt.uuidv4(),
+              spaceId: spaceID,
+              operations: [
+                {
+                  pointer: {
+                    table: parentTable,
+                    id: parentID,
+                    spaceId: spaceID,
+                  },
+                  path,
+                  command: prepend ? 'listBefore' : 'listAfter',
+                  args: {
+                    ...(siblingID ? { after: siblingID } : {}),
+                    id: recordID,
+                  },
+                },
+                {
+                  pointer: {
+                    table: recordTable,
+                    id: recordID,
+                    spaceId: spaceID,
+                  },
+                  path: [],
+                  command: 'set',
+                  args: {
+                    ...args,
+                    ...recordValue,
+                  },
+                },
+              ],
             },
           ],
-        },
-      ],
-    }),
-    method: 'POST',
-  });
-  return json.errorId ? json : recordID;
+        }),
+        method: 'POST',
+      }
+    );
+    return json.errorId ? json : recordID;
+  } catch (err) {
+    return { errorId: 'network_error', message: err.message };
+  }
 };
 
 /**
@@ -318,32 +353,44 @@ export const create = async (
  * @param {string=} pointer.spaceID - uuidv4 space id
  * @returns {string|object} error object or the url of the uploaded file
  */
-export const upload = async (file, { pageID = getPageID(), spaceID = getSpaceID() } = {}) => {
-  spaceID = standardiseUUID(await spaceID);
-  pageID = standardiseUUID(pageID);
-  const json = await fs.getJSON('https://www.notion.so/api/v3/getUploadFileUrl', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      bucket: 'secure',
-      name: file.name,
-      contentType: file.type,
-      record: {
-        table: 'block',
-        id: pageID,
-        spaceId: spaceID,
-      },
-    }),
-  });
-  if (json.errorId) return json;
-  fetch(json.signedPutUrl, {
-    method: 'PUT',
-    headers: { 'content-type': file.type },
-    body: file,
-  });
-  return json.url;
+export const upload = async (
+  file,
+  { pageID = getPageID(), spaceID = getSpaceID() } = {}
+) => {
+  try {
+    spaceID = standardiseUUID(await spaceID);
+    pageID = standardiseUUID(pageID);
+    const json = await fs.getJSON(
+      'https://www.notion.so/api/v3/getUploadFileUrl',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          bucket: 'secure',
+          name: file.name,
+          contentType: file.type,
+          record: {
+            table: 'block',
+            id: pageID,
+            spaceId: spaceID,
+          },
+        }),
+      }
+    );
+    if (json.errorId) return json;
+
+    const res = await fetch(json.signedPutUrl, {
+      method: 'PUT',
+      headers: { 'content-type': file.type },
+      body: file,
+    });
+    if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+    return json.url;
+  } catch (err) {
+    return { errorId: 'network_error', message: err.message };
+  }
 };
 
 /**

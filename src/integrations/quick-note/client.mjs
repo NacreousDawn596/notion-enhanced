@@ -12,22 +12,33 @@ export default async function ({ web, components, notion }, db) {
 
   const newQuickNote = async () => {
     try {
-      const { collection_id } = await notion.get(targetDbId),
-        noteID = await notion.create(
-          {
-            recordValue: {
-              properties: { title: [[`quick note: ${new Date().toLocaleString()}`]] },
+      const pageInfo = await notion.get(targetDbId);
+      if (pageInfo?.errorId || !pageInfo?.collection_id) {
+        throw new Error('Target database not found or network error');
+      }
+      const noteID = await notion.create(
+        {
+          recordValue: {
+            properties: {
+              title: [[`quick note: ${new Date().toLocaleString()}`]],
             },
-            recordType: 'page',
           },
-          { parentID: collection_id, parentTable: 'collection' }
-        );
+          recordTable: 'page',
+        },
+        { parentID: pageInfo.collection_id, parentTable: 'collection' }
+      );
+      if (typeof noteID === 'object' && noteID.errorId) {
+        throw new Error(`Failed to create note: ${noteID.message}`);
+      }
       location.assign(`https://www.notion.so/${noteID.replace(/-/g, '')}`);
-    } catch {
-      alert('quick note failed: target database id did not match any known databases');
+    } catch (err) {
+      alert(`quick note failed: ${err.message}`);
     }
   };
 
-  await components.addCornerAction(await components.feather('feather'), newQuickNote);
+  await components.addCornerAction(
+    await components.feather('feather'),
+    newQuickNote
+  );
   web.addHotkeyListener(await db.get(['hotkey']), newQuickNote);
 }

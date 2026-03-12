@@ -7,43 +7,43 @@
 
 export default async function (api, db) {
   const { html } = api,
-    guideStyle = await db.get("guideStyle"),
-    rainbowMode = await db.get("rainbowMode");
-  document.body.style.setProperty("--guide--style", guideStyle.toLowerCase());
+    guideStyle = await db.get('guideStyle'),
+    rainbowMode = await db.get('rainbowMode');
+  document.body.style.setProperty('--guide--style', guideStyle.toLowerCase());
 
   const nestedTargets = [],
     outlineTargets = [];
   for (const [listType, selectors] of [
-    ["to-doList", [".notion-to_do-block"]],
-    ["bulletedList", [".notion-bulleted_list-block"]],
-    ["numberedList", [".notion-numbered_list-block"]],
-    ["toggleList", [".notion-toggle-block"]],
+    ['to-doList', ['.notion-to_do-block']],
+    ['bulletedList', ['.notion-bulleted_list-block']],
+    ['numberedList', ['.notion-numbered_list-block']],
+    ['toggleList', ['.notion-toggle-block']],
     [
-      "toggleHeadings",
+      'toggleHeadings',
       [
-        ".notion-header-block",
-        ".notion-sub_header-block",
-        ".notion-sub_sub_header-block",
+        '.notion-header-block',
+        '.notion-sub_header-block',
+        '.notion-sub_sub_header-block',
       ],
     ],
   ]) {
     if (await db.get(listType)) nestedTargets.push(...selectors);
   }
-  if (await db.get("tableOfContents"))
-    outlineTargets.push(".notion-table_of_contents-block");
-  if (await db.get("outliner"))
-    outlineTargets.push(".notion-enhancer--outliner-heading");
+  if (await db.get('tableOfContents'))
+    outlineTargets.push('.notion-table_of_contents-block');
+  if (await db.get('outliner'))
+    outlineTargets.push('.notion-enhancer--outliner-heading');
 
-  let css = `${[...nestedTargets, ...outlineTargets].join(",")} {
+  let css = `${[...nestedTargets, ...outlineTargets].join(',')} {
     --guide--opacity: 1;
   }`;
   if (rainbowMode) {
     const opacity = `--guide--opacity: 0.5;`,
-      selector = `:is(${nestedTargets.join(",")})`,
-      colours = ["green", "blue", "purple", "pink", "red", "orange", "yellow"];
-    colours.push(...colours, ...colours, ...colours, "gray");
+      selector = `:is(${nestedTargets.join(',')})`,
+      colours = ['green', 'blue', 'purple', 'pink', 'red', 'orange', 'yellow'];
+    colours.push(...colours, ...colours, ...colours, 'gray');
     for (let i = 0; i < colours.length; i++) {
-      css += `${(selector + " ").repeat(i + 1)} {
+      css += `${(selector + ' ').repeat(i + 1)} {
         --guide--color: var(--theme--fg-${colours[i]});
         ${opacity}
       }`;

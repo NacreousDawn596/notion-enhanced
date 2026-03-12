@@ -4,9 +4,9 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Popup } from "./Popup.mjs";
+import { Popup } from './Popup.mjs';
 
-function Option({ $icon = "", value = "", _get, _set }) {
+function Option({ $icon = '', value = '', _get, _set }) {
   const { html, useState } = globalThis.__enhancerApi;
   return html`<div
     tabindex="0"
@@ -17,7 +17,7 @@ function Option({ $icon = "", value = "", _get, _set }) {
     onmouseover=${(event) => event.target.focus()}
     onclick=${() => _set?.(value)}
     onkeydown=${(event) => {
-      if (["Enter", " "].includes(event.key)) _set?.(value);
+      if (['Enter', ' '].includes(event.key)) _set?.(value);
     }}
   >
     <div
@@ -34,7 +34,7 @@ function Select({
   _set,
   _requireReload = true,
   values = [],
-  popupMode = "left",
+  popupMode = 'left',
   maxWidth = 256,
   minWidth = 48,
   ...props
@@ -58,7 +58,7 @@ function Select({
         event.preventDefault();
         event.stopPropagation();
       };
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         intercept(setState({ rerender: true }));
       } else if (!options.length) return;
       // prettier-ignore
@@ -67,17 +67,17 @@ function Select({
       $prev = options.find(({ $option }) => $option === event.target)
         ?.$option.previousElementSibling ?? options.at(-1).$option;
       // overflow to opposite end of list from dir of travel
-      if (event.key === "ArrowUp") intercept($prev.focus());
-      if (event.key === "ArrowDown") intercept($next.focus());
+      if (event.key === 'ArrowUp') intercept($prev.focus());
+      if (event.key === 'ArrowDown') intercept($next.focus());
       // re-enable natural tab behaviour in notion interface
-      if (event.key === "Tab") event.stopPropagation();
+      if (event.key === 'Tab') event.stopPropagation();
     };
 
   let options = [];
   const valueToOption = (opt) => {
-    if (["string", "number"].includes(typeof opt)) opt = { value: opt };
+    if (['string', 'number'].includes(typeof opt)) opt = { value: opt };
     if (!(opt?.$icon instanceof Element)) {
-      if (typeof opt?.$icon === "string") {
+      if (typeof opt?.$icon === 'string') {
         opt.$icon = html`<i class="i-${opt.$icon} size-[16px]" />`;
       } else delete opt.$icon;
     }
@@ -87,13 +87,13 @@ function Select({
       $option: html`<${Option} ...${{ ...opt, _get, _set }} />`,
       $value: html`<div class="inline-flex text-nowrap items-center gap-[6px]">
         <!-- swap icon/value order for correct display when dir="rtl" -->
-        <span>${opt.label || opt.value}</span>${$icon ?? ""}
+        <span>${opt.label || opt.value}</span>${$icon ?? ''}
       </div>`,
     };
   };
   $select.setValues = (values) => {
     options = values.map(valueToOption);
-    $popup.innerHTML = "";
+    $popup.innerHTML = '';
     $popup.append(...options.map(({ $option }) => $option));
   };
   $select.setValues(values);
@@ -105,10 +105,10 @@ function Select({
     if (!option) _set?.(options[0].value);
     return option || options[0];
   };
-  useState(["rerender"], async () => {
+  useState(['rerender'], async () => {
     if (!options.length) return;
     const { value, $value, $option } = await getSelected();
-    $select.innerHTML = "";
+    $select.innerHTML = '';
     $select.append($value);
     $option.append($selected);
     if (_requireReload) {
@@ -117,21 +117,21 @@ function Select({
     }
   });
 
-  extendProps(props, { class: "notion-enhancer--menu-select relative" });
+  extendProps(props, { class: 'notion-enhancer--menu-select relative' });
   return html`<div ...${props} setValues=${$select.setValues}>
     ${$select}<${Popup}
       tabindex="0"
       trigger=${$select}
       mode=${popupMode}
-      onopen=${() => document.addEventListener("keydown", onKeydown, true)}
+      onopen=${() => document.addEventListener('keydown', onKeydown, true)}
       onbeforeclose=${() => {
-        document.removeEventListener("keydown", onKeydown, true);
+        document.removeEventListener('keydown', onKeydown, true);
         $select.style.width = `${$select.offsetWidth}px`;
-        $select.style.background = "transparent";
+        $select.style.background = 'transparent';
       }}
       onclose=${() => {
-        $select.style.width = "";
-        $select.style.background = "";
+        $select.style.width = '';
+        $select.style.background = '';
       }}
       >${$popup}
     <//>

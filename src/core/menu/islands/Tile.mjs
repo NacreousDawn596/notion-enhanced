@@ -12,7 +12,7 @@ function Tile({ icon, title, tagName, ...props }, ...children) {
     bg-[color:var(--theme--bg-secondary)] py-[12px]
     hover:bg-[color:var(--theme--bg-hover)]`,
   });
-  tagName ??= props["href"] ? "a" : "button";
+  tagName ??= props['href'] ? 'a' : 'button';
   return html`<${tagName} ...${props}>
     <i class="i-${icon} text-[28px]"></i>
     <div>

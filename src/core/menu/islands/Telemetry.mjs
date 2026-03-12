@@ -6,18 +6,18 @@
 
 // telemetry endpoint not ready, disabled for current release
 
-import { collectTelemetryData } from "../../sendTelemetry.mjs";
-import { Option } from "./Options.mjs";
+import { collectTelemetryData } from '../../sendTelemetry.mjs';
+import { Option } from './Options.mjs';
 
-const privacyPolicy = "https://notion-enhancer.github.io/about/privacy-policy/";
+const privacyPolicy = 'https://notion-enhancer.github.io/about/privacy-policy/';
 function Telemetry() {
   const { html, setState, useState, initDatabase } = globalThis.__enhancerApi,
     _get = async () => {
       // defaults to true, must be explicitly set to false to disable
-      return (await initDatabase().get("telemetryEnabled")) ?? true;
+      return (await initDatabase().get('telemetryEnabled')) ?? true;
     },
     _set = async (value) => {
-      await initDatabase().set("telemetryEnabled", value);
+      await initDatabase().set('telemetryEnabled', value);
       setState({ rerender: true });
     };
 
@@ -27,7 +27,7 @@ function Telemetry() {
     timezone: html`<code></code>`,
     enabled_mods: html`<code></code>`,
   };
-  useState(["rerender"], async () => {
+  useState(['rerender'], async () => {
     const telemetryData = await collectTelemetryData();
     for (const key in telemetryData) {
       $[key].innerText = JSON.stringify(telemetryData[key]);

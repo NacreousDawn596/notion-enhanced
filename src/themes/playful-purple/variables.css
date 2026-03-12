@@ -102,8 +102,8 @@
   --theme--tag_red: rgb(251, 228, 228);
   --theme--tag_red-text: rgb(138, 0, 10);
 
-  --theme--board_light_gray: #EBEBED;
-  --theme--board_light_gray-text: #74777A;
+  --theme--board_light_gray: #ebebed;
+  --theme--board_light_gray-text: #74777a;
   --theme--board_light_gray-card: var(--theme--tag_light_gray);
   --theme--board_light_gray-card_text: var(--theme--tag_light_gray-text);
   --theme--board_gray: #e2e3e5;

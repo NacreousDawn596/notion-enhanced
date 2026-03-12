@@ -12,7 +12,9 @@
 }
 
 /* hide sidebar "new page" button */
-.notion-dark-theme .notion-sidebar > [style*='flex: 0 0 auto; margin-top: auto;'] {
+.notion-dark-theme
+  .notion-sidebar
+  > [style*='flex: 0 0 auto; margin-top: auto;'] {
   display: none !important;
 }
 

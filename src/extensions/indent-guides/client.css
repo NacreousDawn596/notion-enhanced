@@ -23,7 +23,7 @@ body {
   --guide--indent: 14px;
   position: relative;
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     height: calc(100% - var(--guide--offset));
     top: var(--guide--offset);
@@ -48,14 +48,14 @@ body {
 
 /* add indent guides to toc blocks & the outliner */
 .notion-table_of_contents-block
-  [contenteditable="false"]
+  [contenteditable='false']
   a
-  > div:not([style*="margin-left: 0"]),
+  > div:not([style*='margin-left: 0']),
 .notion-enhancer--outliner-heading:not(.pl-\[18px\]) {
   position: relative;
   --guide--indent: -16px;
   &:before {
-    content: "";
+    content: '';
     top: 0;
     position: absolute;
     height: 100%;
@@ -71,10 +71,10 @@ body {
 
 /* add solid background to drag handles,
 otherwise guides show through underneath */
-[role="button"]:is([aria-label="Drag"], [aria-label^="Click to add below"]) {
+[role='button']:is([aria-label='Drag'], [aria-label^='Click to add below']) {
   position: relative;
   &:before {
-    content: "";
+    content: '';
     z-index: -1;
     position: absolute;
     width: 100%;

@@ -74,7 +74,13 @@ export default async function ({ electron, web, components }, db) {
     $scaleMinus.addEventListener('click', () => zoomMinus());
 
     $topbarActions.prepend(
-      web.render($scaleContainer, $scaleSlider, $scaleCounter, $scalePlus, $scaleMinus)
+      web.render(
+        $scaleContainer,
+        $scaleSlider,
+        $scaleCounter,
+        $scalePlus,
+        $scaleMinus
+      )
     );
 
     web.addHotkeyListener(['Ctrl', '+'], updateScale);

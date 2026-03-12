@@ -19,10 +19,10 @@ function Stat({ unit, countable, ...props }) {
     </p>`;
   $stat.setCount = (count) => {
     $count.innerText = count;
-    const pluralise = countable && typeof count === "number" && count !== 1;
+    const pluralise = countable && typeof count === 'number' && count !== 1;
     $unit.innerText = pluralise ? `${unit}s` : unit;
   };
-  $stat.addEventListener("click", () => {
+  $stat.addEventListener('click', () => {
     navigator.clipboard.writeText($stat.innerText);
   });
   return $stat;

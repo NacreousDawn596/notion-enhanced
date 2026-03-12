@@ -6,10 +6,10 @@
 
 export default async (api) => {
   const { addMutationListener } = api,
-    peekRenderer = ".notion-peek-renderer",
+    peekRenderer = '.notion-peek-renderer',
     openInFullPage = `[aria-label="Open in full page"]`,
     pageId = () => location.pathname.split(/-|\//g).at(-1),
-    peekId = () => new URLSearchParams(location.search).get("p");
+    peekId = () => new URLSearchParams(location.search).get('p');
 
   let _pageId = pageId();
   const skipPeek = () => {

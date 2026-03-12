@@ -4,7 +4,7 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Description } from "./Description.mjs";
+import { Description } from './Description.mjs';
 
 function SidebarHeading({}, ...children) {
   const { html } = globalThis.__enhancerApi;
@@ -19,7 +19,7 @@ function SidebarHeading({}, ...children) {
 
 function SidebarButton({ id, icon, ...props }, ...children) {
   const { html, extendProps, setState, useState } = globalThis.__enhancerApi,
-    $btn = html`<${props["href"] ? "a" : "button"}
+    $btn = html`<${props['href'] ? 'a' : 'button'}
       class="flex items-center select-none cursor-pointer text-[14px]
       transition hover:bg-[color:var(--theme--bg-hover)] disabled:hidden
       min-h-[27px] w-full my-px last:mb-[12px] px-[12px] rounded-[4px]"
@@ -27,22 +27,22 @@ function SidebarButton({ id, icon, ...props }, ...children) {
     >
       ${icon
         ? html`<i
-            class="i-${icon} ${icon.startsWith("notion-enhancer")
-              ? "size-[17px] ml-[1.5px] mr-[9.5px]"
-              : "size-[18px] ml-px mr-[9px]"}"
+            class="i-${icon} ${icon.startsWith('notion-enhancer')
+              ? 'size-[17px] ml-[1.5px] mr-[9.5px]'
+              : 'size-[18px] ml-px mr-[9px]'}"
           ></i>`
-        : ""}
+        : ''}
       <span class="leading-[20px]">${children}</span>
     <//>`;
 
-  if (!props["href"]) {
+  if (!props['href']) {
     extendProps($btn, {
-      onclick: () => setState({ transition: "fade", view: id }),
+      onclick: () => setState({ transition: 'fade', view: id }),
     });
-    useState(["view"], ([view = "welcome"]) => {
+    useState(['view'], ([view = 'welcome']) => {
       const active = view.toLowerCase() === id.toLowerCase();
-      $btn.style.background = active ? "var(--theme--bg-hover)" : "";
-      $btn.style.fontWeight = active ? "600" : "";
+      $btn.style.background = active ? 'var(--theme--bg-hover)' : '';
+      $btn.style.fontWeight = active ? '600' : '';
     });
   }
   return $btn;
@@ -69,15 +69,15 @@ function Sidebar({ items, categories }) {
             <${SidebarHeading}>${title}<//>
             <${Description}>${desc}<//>
           `;
-        } else if (typeof item === "object") {
+        } else if (typeof item === 'object') {
           const { title, ...props } = item;
           return html`<${SidebarButton} ...${props}>${title}<//>`;
         } else return html`<${SidebarHeading}>${item}<//>`;
       })}${$agreeToUnlock}
     </aside>`;
-  useState(["rerender"], async () => {
-    const agreedToTerms = await initDatabase().get("agreedToTerms");
-    $agreeToUnlock.style.display = agreedToTerms === version ? "none" : "";
+  useState(['rerender'], async () => {
+    const agreedToTerms = await initDatabase().get('agreedToTerms');
+    $agreeToUnlock.style.display = agreedToTerms === version ? 'none' : '';
     [...$sidebar.children].forEach(($btn) => {
       if (!$btn.disableUntilAgreedToTerms) return;
       $btn.disabled = agreedToTerms !== version;
@@ -94,13 +94,13 @@ function Sidebar({ items, categories }) {
         ]);
     $sidebar.append($title, ...$mods.map(([, $btn]) => $btn));
 
-    useState(["rerender"], async () => {
+    useState(['rerender'], async () => {
       let sectionVisible = false;
       for (const [id, $btn] of $mods) {
         $btn.disabled = !(await isEnabled(id));
         sectionVisible ||= !$btn.disabled;
       }
-      $title.style.display = sectionVisible ? "" : "none";
+      $title.style.display = sectionVisible ? '' : 'none';
     });
   }
 

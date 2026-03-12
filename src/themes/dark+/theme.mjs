@@ -14,7 +14,10 @@ export default async function ({ fmt }, db) {
         .split(',')
         .map((i) => parseInt(i));
     if (!(r === 46 && g === 170 && b === 220)) {
-      document.documentElement.style.setProperty('--dark_plus--accent_blue', primary);
+      document.documentElement.style.setProperty(
+        '--dark_plus--accent_blue',
+        primary
+      );
       document.documentElement.style.setProperty(
         '--dark_plus--accent_blue-selection',
         `rgba(${r},${g},${b},0.2)`
@@ -41,7 +44,10 @@ export default async function ({ fmt }, db) {
         .split(',')
         .map((i) => parseInt(i));
     if (!(r === 235 && g === 87 && b === 87)) {
-      document.documentElement.style.setProperty('--dark_plus--accent_red', secondary);
+      document.documentElement.style.setProperty(
+        '--dark_plus--accent_red',
+        secondary
+      );
       document.documentElement.style.setProperty(
         '--dark_plus--accent_red-button',
         `rgba(${r},${g},${b},0.2)`

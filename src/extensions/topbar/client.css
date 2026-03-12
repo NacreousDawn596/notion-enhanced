@@ -17,12 +17,12 @@
 
 /* position comments & updates sidebars below topbar */
 .notion-cursor-listener
-  aside[style*="align-self: flex-end"][style*="height: 100vh"] {
+  aside[style*='align-self: flex-end'][style*='height: 100vh'] {
   height: calc(100vh - 45px) !important;
   top: 45px !important;
 }
 .notion-cursor-listener
-  aside[style*="align-self: flex-end"][style*="height: 100vh"]
-  [style*="margin-top: 45px"] {
+  aside[style*='align-self: flex-end'][style*='height: 100vh']
+  [style*='margin-top: 45px'] {
   margin-top: 0 !important;
 }

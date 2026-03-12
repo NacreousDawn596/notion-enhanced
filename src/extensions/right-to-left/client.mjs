@@ -29,16 +29,16 @@ export default async (api) => {
   const autoAlignText = () => {
     document
       .querySelectorAll(pageContentSelector)
-      .forEach(($block) => $block.setAttribute("dir", "auto"));
+      .forEach(($block) => $block.setAttribute('dir', 'auto'));
     document.querySelectorAll(listItemSelector).forEach(($item) => {
-      $item.style["text-align"] = "start";
+      $item.style['text-align'] = 'start';
     });
     document.querySelectorAll(inlineEquationSelector).forEach(($equation) => {
-      $equation.style.direction = "rtl";
-      $equation.style.display = "inline-flex";
-      $equation.style.flexDirection = "row-reverse";
+      $equation.style.direction = 'rtl';
+      $equation.style.display = 'inline-flex';
+      $equation.style.flexDirection = 'row-reverse';
       for (const $symbol of $equation.children) {
-        $symbol.style.direction = "ltr";
+        $symbol.style.direction = 'ltr';
       }
     });
   };
@@ -47,6 +47,6 @@ export default async (api) => {
     pageContentSelector,
     listItemSelector,
     inlineEquationSelector,
-  ].join(",");
+  ].join(',');
   addMutationListener(textareas, autoAlignText);
 };

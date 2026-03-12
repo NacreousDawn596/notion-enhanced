@@ -4,9 +4,9 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import { Description } from "./Description.mjs";
-import { Input } from "./Input.mjs";
-import { Mod } from "./Mod.mjs";
+import { Description } from './Description.mjs';
+import { Input } from './Input.mjs';
+import { Mod } from './Mod.mjs';
 
 function Search({ items, itemType }) {
   const { html, addKeyListener } = globalThis.__enhancerApi,
@@ -15,18 +15,18 @@ function Search({ items, itemType }) {
       icon="search"
       variant="lg"
       placeholder="Search ${items.length} ${items.length === 1
-        ? itemType.replace(/s$/, "")
+        ? itemType.replace(/s$/, '')
         : itemType} (Press '/' to focus)"
       oninput=${(event) => {
         const query = event.target.value.toLowerCase();
         for (const $item of items) {
           const matches = $item.innerText.toLowerCase().includes(query);
-          $item.style.display = matches ? "" : "none";
+          $item.style.display = matches ? '' : 'none';
         }
       }}
     />`;
-  addKeyListener("/", (event) => {
-    if (document.activeElement?.nodeName === "INPUT") return;
+  addKeyListener('/', (event) => {
+    if (document.activeElement?.nodeName === 'INPUT') return;
     // offsetParent == null if parent has "display: none;"
     if ($search.offsetParent) {
       event.preventDefault();
@@ -46,13 +46,13 @@ function List({ id, mods, description }) {
           // only one theme may be enabled per
           // mode at a time => auto-disable other
           // enabled themes of matching mode
-          if (enabled && id === "themes") {
-            const isDark = mod.tags.includes("dark"),
-              isLight = mod.tags.includes("light");
+          if (enabled && id === 'themes') {
+            const isDark = mod.tags.includes('dark'),
+              isLight = mod.tags.includes('light');
             for (const other of mods) {
               if (other.id === mod.id) continue;
-              const otherDark = other.tags.includes("dark"),
-                otherLight = other.tags.includes("light");
+              const otherDark = other.tags.includes('dark'),
+                otherLight = other.tags.includes('light');
               if ((isDark && otherDark) || (isLight && otherLight)) {
                 await setEnabled(other.id, false);
               }

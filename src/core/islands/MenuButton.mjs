@@ -11,7 +11,7 @@ function MenuButton(
   const { html, extendProps } = globalThis.__enhancerApi;
   extendProps(props, {
     tabindex: 0,
-    role: "button",
+    role: 'button',
     class: `notion-enhancer--menu-button flex select-none
     cursor-pointer rounded-[6px] text-[14px] font-medium
     transition hover:bg-[color:var(--theme--bg-hover)]
@@ -23,7 +23,7 @@ function MenuButton(
     </div>
     <div>${children}</div>
 
-    <div class="ml-auto my-auto${notifications > 0 ? "" : " hidden"}">
+    <div class="ml-auto my-auto${notifications > 0 ? '' : ' hidden'}">
       <!-- accents are squashed into one variable for theming:
       use rgb to match notion if overrides not loaded -->
       <div
@@ -31,8 +31,8 @@ function MenuButton(
         text-([10px] [color:var(--theme--accent-secondary\\_contrast)])
         bg-[color:var(--theme--accent-secondary)] rounded-[3px]
         dark:bg-[color:${themeOverridesLoaded
-          ? "var(--theme--accent-secondary)"
-          : "rgb(180,65,60)"}]"
+          ? 'var(--theme--accent-secondary)'
+          : 'rgb(180,65,60)'}]"
       >
         <span class="ml-[-0.5px]">${notifications}</span>
       </div>

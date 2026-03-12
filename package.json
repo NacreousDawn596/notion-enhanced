@@ -1,6 +1,6 @@
 {
   "name": "notion-enhancer",
-  "version": "0.11.1",
+  "version": "0.15.0",
   "author": "dragonwocky <thedragonring.bod@gmail.com> (https://dragonwocky.me/)",
   "description": "Customise the all-in-one productivity workspace Notion.",
   "homepage": "https://notion-enhancer.github.io",
@@ -11,8 +11,12 @@
   "bin": "bin.mjs",
   "type": "module",
   "scripts": {
+    "start:desktop": "electron desktop.js",
     "build": "./scripts/build-browser-extension.sh",
-    "vendor": "node ./scripts/vendor-dependencies.mjs"
+    "vendor": "node ./scripts/vendor-dependencies.mjs",
+    "test": "node --test test/**/*.test.mjs",
+    "lint": "eslint \"src/**/*.mjs\" \"src/**/*.js\" \"scripts/**/*.mjs\"",
+    "format": "prettier --write \"src/**/*.{js,mjs,css,json}\" \"scripts/**/*.{js,mjs}\""
   },
   "engines": {
     "node": ">=18.x.x"
@@ -36,7 +40,14 @@
   ],
   "dependencies": {
     "@electron/asar": "^3.2.9",
-    "chalk-template": "^1.1.0",
-    "arg": "^5.0.2"
+    "arg": "^5.0.2",
+    "chalk-template": "^1.1.0"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1"
   }
 }

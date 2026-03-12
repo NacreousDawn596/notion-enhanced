@@ -4,14 +4,14 @@
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
-import htm from "../vendor/htm.mjs";
-import lucide from "../vendor/lucide.mjs";
+import htm from '../vendor/htm.mjs';
+import lucide from '../vendor/lucide.mjs';
 import {
   createGenerator,
   expandVariantGroup,
-} from "../vendor/@unocss-core.mjs";
-import { presetUno } from "../vendor/@unocss-preset-uno.mjs";
-import "../assets/icons.svg.js";
+} from '../vendor/@unocss-core.mjs';
+import { presetUno } from '../vendor/@unocss-preset-uno.mjs';
+import '../assets/icons.svg.js';
 
 // prettier-ignore
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
@@ -27,13 +27,13 @@ const svgElements = ["animate","animateMotion","animateTransform","circle","clip
 // accented character on some keyboard layouts (not recommended).
 let keyListeners = [];
 const modifierAliases = [
-    ["metaKey", ["meta", "os", "win", "cmd", "command"]],
-    ["ctrlKey", ["ctrl", "control"]],
-    ["shiftKey", ["shift"]],
-    ["altKey", ["alt"]],
+    ['metaKey', ['meta', 'os', 'win', 'cmd', 'command']],
+    ['ctrlKey', ['ctrl', 'control']],
+    ['shiftKey', ['shift']],
+    ['altKey', ['alt']],
   ],
   addKeyListener = (accelerator, callback, waitForKeyup = false) => {
-    if (typeof accelerator === "string") accelerator = accelerator.split("+");
+    if (typeof accelerator === 'string') accelerator = accelerator.split('+');
     accelerator = accelerator.map((key) => key.toLowerCase());
     keyListeners.push([accelerator, callback, waitForKeyup]);
   },
@@ -51,12 +51,12 @@ const modifierAliases = [
                 return true;
               }
             }
-            if (key === "space") key = " ";
-            if (key === "plus") key = "equal";
-            if (key === "minus") key = "-";
-            if (key === "\\") key = "backslash";
-            if (key === ",") key = "comma";
-            if (key === ".") key = "period";
+            if (key === 'space') key = ' ';
+            if (key === 'plus') key = 'equal';
+            if (key === 'minus') key = '-';
+            if (key === '\\') key = 'backslash';
+            if (key === ',') key = 'comma';
+            if (key === '.') key = 'period';
             const keyPressed = [
               event.key.toLowerCase(),
               event.code.toLowerCase(),
@@ -83,10 +83,10 @@ const modifierAliases = [
       .filter(([, , waitForKeyup]) => !waitForKeyup);
     handleKeypress(event, keydownListeners);
   };
-document.removeEventListener("keyup", onKeyup);
-document.removeEventListener("keydown", onKeydown);
-document.addEventListener("keyup", onKeyup);
-document.addEventListener("keydown", onKeydown);
+document.removeEventListener('keyup', onKeyup);
+document.removeEventListener('keydown', onKeydown);
+document.addEventListener('keyup', onKeyup);
+document.addEventListener('keydown', onKeydown);
 
 // mutation listeners observe updates to the dom.
 // by default, the criteria for matching a selector
@@ -113,10 +113,10 @@ const _mutations = [],
     mutationListeners = mutationListeners.filter(([, c]) => c !== callback);
   },
   selectorMutated = (mutation, selector, opts) => {
-    if (!opts.attributes && mutation.type === "attributes") return false;
-    if (!opts.characterData && mutation.type === "characterData") return false;
+    if (!opts.attributes && mutation.type === 'attributes') return false;
+    if (!opts.characterData && mutation.type === 'characterData') return false;
     const target =
-      mutation.type === "characterData"
+      mutation.type === 'characterData'
         ? mutation.target.parentElement
         : mutation.target;
     if (!target) return false;
@@ -139,15 +139,15 @@ const _mutations = [],
     }
   },
   attachObserver = () => {
-    if (document.readyState !== "complete") return;
-    document.removeEventListener("readystatechange", attachObserver);
+    if (document.readyState !== 'complete') return;
+    document.removeEventListener('readystatechange', attachObserver);
     (documentObserver ??= new MutationObserver((mutations, _observer) => {
       if (!_mutations.length) requestIdleCallback(handleMutations);
       _mutations.push(...mutations);
     })).disconnect();
     documentObserver.observe(document.body, observerDefaults);
   };
-document.addEventListener("readystatechange", attachObserver);
+document.addEventListener('readystatechange', attachObserver);
 attachObserver();
 
 const kebabToPascalCase = (string) =>
@@ -156,9 +156,9 @@ const kebabToPascalCase = (string) =>
   hToString = (type, props, ...children) =>
     `<${type}${Object.entries(props)
       .map(([attr, value]) => ` ${attr}="${value}"`)
-      .join("")}>${children
+      .join('')}>${children
       .map((child) => (Array.isArray(child) ? hToString(...child) : child))
-      .join("")}</${type}>`,
+      .join('')}</${type}>`,
   // combines instance-provided element props
   // with a template of element props such that
   // island/component/template props handlers
@@ -167,12 +167,12 @@ const kebabToPascalCase = (string) =>
   extendProps = (props, extend) => {
     for (const key in extend) {
       const { [key]: value } = props;
-      if (typeof extend[key] === "function") {
+      if (typeof extend[key] === 'function') {
         props[key] = (...args) => {
           extend[key](...args);
-          if (typeof value === "function") value(...args);
+          if (typeof value === 'function') value(...args);
         };
-      } else if (key === "class") {
+      } else if (key === 'class') {
         props[key] = value ? `${value} ${extend[key]}` : extend[key];
       } else props[key] = extend[key] ?? value;
     }
@@ -187,31 +187,31 @@ const kebabToPascalCase = (string) =>
     // disables element caching
     this[0] = 3;
     children = children.flat(Infinity);
-    if (typeof type === "function") {
+    if (typeof type === 'function') {
       // html`<${Component} attr="value">Click Me<//>`
       return type(props ?? {}, ...children);
     }
     const elem = svgElements.includes(type)
-      ? document.createElementNS("http://www.w3.org/2000/svg", type)
+      ? document.createElementNS('http://www.w3.org/2000/svg', type)
       : document.createElement(type);
     for (const prop in props ?? {}) {
-      if (typeof props[prop] === "undefined") continue;
-      if (["class", "className"].includes(prop)) {
+      if (typeof props[prop] === 'undefined') continue;
+      if (['class', 'className'].includes(prop)) {
         // collapse multiline classes &
         // expand utility variant class groups
-        props[prop] = props[prop].replace(/\s+/g, " ");
+        props[prop] = props[prop].replace(/\s+/g, ' ');
         props[prop] = expandVariantGroup(props[prop]).trim();
-        elem.setAttribute("un-cloak", "");
+        elem.setAttribute('un-cloak', '');
       }
-      if (htmlAttributes.includes(prop) || prop.includes("-")) {
-        if (typeof props[prop] === "boolean") {
+      if (htmlAttributes.includes(prop) || prop.includes('-')) {
+        if (typeof props[prop] === 'boolean') {
           if (!props[prop]) continue;
-          elem.setAttribute(prop, "");
+          elem.setAttribute(prop, '');
         } else elem.setAttribute(prop, props[prop]);
       } else elem[prop] = props[prop];
     }
-    if (type === "style") {
-      elem.append(children.join("").replace(/\s+/g, " "));
+    if (type === 'style') {
+      elem.append(children.join('').replace(/\s+/g, ' '));
     } else elem.append(...children);
     return elem;
   },
@@ -220,19 +220,19 @@ const kebabToPascalCase = (string) =>
 const iconPattern = /^i-((?:\w|-)+)(?:\?(mask|bg|auto))?$/,
   svgToUri = (svg) => {
     // https://gist.github.com/jennyknuth/222825e315d45a738ed9d6e04c7a88d0
-    const xlmns = ~svg.indexOf("xmlns")
-      ? "<svg"
+    const xlmns = ~svg.indexOf('xmlns')
+      ? '<svg'
       : '<svg xmlns="http://www.w3.org/2000/svg"';
     return `url("data:image/svg+xml;utf8,${svg
-      .replace("<svg", xlmns)
+      .replace('<svg', xlmns)
       .replace(/"/g, "'")
-      .replace(/%/g, "%25")
-      .replace(/#/g, "%23")
-      .replace(/{/g, "%7B")
-      .replace(/}/g, "%7D")
-      .replace(/</g, "%3C")
-      .replace(/>/g, "%3E")
-      .replace(/\s+/g, " ")
+      .replace(/%/g, '%25')
+      .replace(/#/g, '%23')
+      .replace(/{/g, '%7B')
+      .replace(/}/g, '%7D')
+      .replace(/</g, '%3C')
+      .replace(/>/g, '%3E')
+      .replace(/\s+/g, ' ')
       .trim()}")`;
   },
   // prefer custom preset over @unocss/preset-icons:
@@ -242,8 +242,8 @@ const iconPattern = /^i-((?:\w|-)+)(?:\?(mask|bg|auto))?$/,
   // handling straightforward
   presetIcons = ([, icon, mode]) => {
     let svg,
-      mask = mode === "mask";
-    if (icon === "notion-enhancer") {
+      mask = mode === 'mask';
+    if (icon === 'notion-enhancer') {
       const { iconColour, iconMonochrome } = globalThis.__enhancerApi;
       svg = mask ? iconMonochrome : iconColour;
     } else {
@@ -252,15 +252,15 @@ const iconPattern = /^i-((?:\w|-)+)(?:\?(mask|bg|auto))?$/,
       const [type, props, children] = lucide[icon];
       svg = hToString(type, props, ...children);
     }
-    mask ||= mode !== "bg" && svg.includes("currentColor");
+    mask ||= mode !== 'bg' && svg.includes('currentColor');
     return {
       // https://antfu.me/posts/icons-in-pure-css
-      display: "inline-block",
-      height: "1em",
-      width: "1em",
-      [mask ? "mask" : "background"]: `${svgToUri(svg)} no-repeat`,
-      [mask ? "mask-size" : "background-size"]: "100% 100%",
-      "background-color": mask ? "currentColor" : "transparent",
+      display: 'inline-block',
+      height: '1em',
+      width: '1em',
+      [mask ? 'mask' : 'background']: `${svgToUri(svg)} no-repeat`,
+      [mask ? 'mask-size' : 'background-size']: '100% 100%',
+      'background-color': mask ? 'currentColor' : 'transparent',
     };
   };
 
@@ -272,14 +272,14 @@ const _tokens = new Set(),
   uno = createGenerator({
     presets: [presetUno()],
     preflights: [{ getCSS: () => preflight }],
-    rules: [[iconPattern, presetIcons, { layer: "icons" }]],
+    rules: [[iconPattern, presetIcons, { layer: 'icons' }]],
     layers: { preflights: -2, icons: -1, default: 1 },
   }),
   extractTokens = ($root) => {
     if (!$root?.classList) return;
     for (const t of $root.classList) _tokens.add(t);
     for (const $ of $root.children) extractTokens($);
-    $root.removeAttribute("un-cloak");
+    $root.removeAttribute('un-cloak');
   },
   renderStylesheet = async () => {
     if (_renderedTokens === _tokens.size) return;
@@ -288,10 +288,10 @@ const _tokens = new Set(),
     if (!document.contains(_stylesheet)) document.head.append(_stylesheet);
     if (_stylesheet.innerHTML !== res.css) _stylesheet.innerHTML = res.css;
   };
-addMutationListener("*", (mutation) => {
-  if (mutation.type === "childList") {
+addMutationListener('*', (mutation) => {
+  if (mutation.type === 'childList') {
     for (const node of mutation.addedNodes) extractTokens(node);
-  } else if (mutation.type === "attributes") extractTokens(mutation.target);
+  } else if (mutation.type === 'attributes') extractTokens(mutation.target);
   else return;
   renderStylesheet();
 });
