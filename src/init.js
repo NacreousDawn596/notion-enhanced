@@ -1,6 +1,6 @@
 /**
- * notion-enhancer
- * (c) 2024 dragonwocky <thedragonring.bod@gmail.com> (https://dragonwocky.me/)
+ * notion-enhanced
+ * (c) 2026 Aferiad Kamal <kamal@aferiad.xyz> (https://kamal.aferiad.xyz)
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
@@ -10,7 +10,7 @@ const coreId = '0f0bf8b6-eae6-4273-b307-8fc43f2ee082',
   isElectron = () => {
     try {
       return typeof module !== 'undefined';
-    } catch {}
+    } catch { }
     return false;
   };
 

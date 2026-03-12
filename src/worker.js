@@ -1,6 +1,6 @@
 /*
- * notion-enhancer
- * (c) 2023 dragonwocky <thedragonring.bod@gmail.com> (https://dragonwocky.me/)
+ * notion-enhanced
+ * (c) 2026 Aferiad Kamal <kamal@aferiad.xyz> (https://kamal.aferiad.xyz)
  * (https://notion-enhancer.github.io/) under the MIT license
  */
 
@@ -10,50 +10,50 @@ const IS_ELECTRON = typeof module !== 'undefined';
 
 let __db, __statements, __transactions;
 const initDatabase = async () => {
-    if (!IS_ELECTRON) return chrome.storage.local;
+  if (!IS_ELECTRON) return chrome.storage.local;
 
-    // schema:
-    // - ("agreedToTerms") -> string: semver
-    // - ("lastTelemetryPing") -> string: iso
-    // - ("telemetryEnabled") -> boolean
-    // - ("profileIds") -> $profileId[]
-    // - ("activeProfile") -> $profileId
-    // - $profileId: ("profileName") -> string
-    // - $profileId__enabledMods: ($modId) -> boolean
-    // - $profileId__$modId: ($optionKey) -> value
+  // schema:
+  // - ("agreedToTerms") -> string: semver
+  // - ("lastTelemetryPing") -> string: iso
+  // - ("telemetryEnabled") -> boolean
+  // - ("profileIds") -> $profileId[]
+  // - ("activeProfile") -> $profileId
+  // - $profileId: ("profileName") -> string
+  // - $profileId__enabledMods: ($modId) -> boolean
+  // - $profileId__$modId: ($optionKey) -> value
 
-    const table = 'kvstore',
-      { app } = require('electron'),
-      { resolve } = require('path'),
-      sqlite = require('better-sqlite3'),
-      db = sqlite(resolve(`${app.getPath('userData')}/notion-enhancer.db`)),
-      init = db.prepare(`CREATE TABLE IF NOT EXISTS ${table} (
+  const table = 'kvstore',
+    { app } = require('electron'),
+    { resolve } = require('path'),
+    sqlite = require('better-sqlite3'),
+    db = sqlite(resolve(`${app.getPath('userData')}/notion-enhancer.db`)),
+    init = db.prepare(`CREATE TABLE IF NOT EXISTS ${table} (
         key     TEXT PRIMARY KEY,
         value   TEXT
       )`);
-    init.run();
+  init.run();
 
-    __statements = {
-      insert: db.prepare(`INSERT INTO ${table} (key, value) VALUES (?, ?)`),
-      update: db.prepare(`UPDATE ${table} SET value = ? WHERE key = ?`),
-      select: db.prepare(`SELECT * FROM ${table} WHERE key = ? LIMIT 1`),
-      delete: db.prepare(`DELETE FROM ${table} WHERE key = ?`),
-      dump: db.prepare(`SELECT * FROM ${table}`),
-    };
-    __transactions = {
-      remove: db.transaction((arr) => {
-        arr.forEach((key) => __statements.delete.run(key));
-      }),
-      set: db.transaction((obj) => {
-        for (const key in obj) {
-          if (__statements.select.get(key) === undefined) {
-            __statements.insert.run(key, obj[key]);
-          } else __statements.update.run(obj[key], key);
-        }
-      }),
-    };
-    return db;
-  },
+  __statements = {
+    insert: db.prepare(`INSERT INTO ${table} (key, value) VALUES (?, ?)`),
+    update: db.prepare(`UPDATE ${table} SET value = ? WHERE key = ?`),
+    select: db.prepare(`SELECT * FROM ${table} WHERE key = ? LIMIT 1`),
+    delete: db.prepare(`DELETE FROM ${table} WHERE key = ?`),
+    dump: db.prepare(`SELECT * FROM ${table}`),
+  };
+  __transactions = {
+    remove: db.transaction((arr) => {
+      arr.forEach((key) => __statements.delete.run(key));
+    }),
+    set: db.transaction((obj) => {
+      for (const key in obj) {
+        if (__statements.select.get(key) === undefined) {
+          __statements.insert.run(key, obj[key]);
+        } else __statements.update.run(obj[key], key);
+      }
+    }),
+  };
+  return db;
+},
   queryDatabase = async (namespace, query, args) => {
     namespace ??= '';
     if (Array.isArray(namespace)) namespace = namespace.join('__');
@@ -69,7 +69,7 @@ const initDatabase = async () => {
         if (IS_ELECTRON) {
           try {
             value = JSON.parse(__statements.select.get(key)?.value);
-          } catch {}
+          } catch { }
         } else value = (await chrome.storage.local.get([key]))[key];
         return value ?? args.fallbacks?.[args.key];
       }
@@ -78,7 +78,7 @@ const initDatabase = async () => {
           value = args.value;
         return IS_ELECTRON
           ? // returns true instead of transaction completion data type
-            (__transactions.set({ [key]: JSON.stringify(value) }), true)
+          (__transactions.set({ [key]: JSON.stringify(value) }), true)
           : chrome.storage.local.set({ [key]: value });
       }
       case 'remove': {
@@ -130,12 +130,12 @@ if (IS_ELECTRON) {
     //   return callback({ responseHeaders });
     // });
 
-    ipcMain.handle('notion-enhancer', ({}, message) => {
+    ipcMain.handle('notion-enhancer', ({ }, message) => {
       if (message?.action !== 'query-database') return;
       const { namespace, query, args } = message.data;
       return queryDatabase(namespace, query, args);
     });
-    ipcMain.on('notion-enhancer', ({}, message) => {
+    ipcMain.on('notion-enhancer', ({ }, message) => {
       if (message === 'reload-app') reloadApp();
     });
   });
@@ -165,15 +165,15 @@ if (IS_ELECTRON) {
     };
 
   const userScriptsAvailable = () => {
-      // manifest v3 userscripts require developer mode to be
-      // enabled in the browser's extension settings
-      try {
-        chrome.userScripts;
-        return true;
-      } catch {
-        return false;
-      }
-    },
+    // manifest v3 userscripts require developer mode to be
+    // enabled in the browser's extension settings
+    try {
+      chrome.userScripts;
+      return true;
+    } catch {
+      return false;
+    }
+  },
     registerCustomScript = async () => {
       if (!userScriptsAvailable()) return;
       // enhancer apis are not available in the worker in-browser,

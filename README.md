@@ -1,4 +1,4 @@
-# Notion Enhancer (v0.15.0)
+# Notion Enhanced (v0.15.0)
 
 **Customise the all-in-one productivity workspace Notion.**
 

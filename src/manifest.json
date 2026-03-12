@@ -2,13 +2,24 @@
   "manifest_version": 3,
   "name": "notion-enhancer",
   "version": "0.15.0",
-  "author": "dragonwocky <thedragonring.bod@gmail.com> (https://dragonwocky.me/)",
+  "author": "Aferiad Kamal <kamal@aferiad.xyz> (https://kamal.aferiad.xyz)",
   "description": "Customise the all-in-one productivity workspace Notion.",
   "homepage_url": "https://notion-enhancer.github.io",
-  "content_scripts": [{ "matches": ["*://*.notion.so/*"], "js": ["/init.js"] }],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.notion.so/*"
+      ],
+      "js": [
+        "/init.js"
+      ]
+    }
+  ],
   "background": {
     "service_worker": "/worker.js",
-    "scripts": ["/worker.js"],
+    "scripts": [
+      "/worker.js"
+    ],
     "type": "module"
   },
   "action": {},
@@ -27,8 +38,17 @@
     "clipboardWrite",
     "unlimitedStorage"
   ],
-  "host_permissions": ["*://*.notion.so/*"],
+  "host_permissions": [
+    "*://*.notion.so/*"
+  ],
   "web_accessible_resources": [
-    { "matches": ["*://*.notion.so/*"], "resources": ["/*"] }
+    {
+      "matches": [
+        "*://*.notion.so/*"
+      ],
+      "resources": [
+        "/*"
+      ]
+    }
   ]
 }
