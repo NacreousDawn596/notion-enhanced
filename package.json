@@ -4,9 +4,9 @@
   "author": "Aferiad Kamal <kamal@aferiad.xyz> (https://kamal.aferiad.xyz)",
   "description": "Customise the all-in-one productivity workspace Notion.",
   "homepage": "https://notion-enhancer.github.io",
-  "repository": "github:notion-enhancer/desktop",
-  "bugs": "https://github.com/notion-enhancer/desktop/issues",
-  "funding": "https://github.com/sponsors/dragonwocky",
+  "repository": "github:NacreousDawn596/notion-enhanced",
+  "bugs": "https://github.com/NacreousDawn596/notion-enhanced/issues",
+  "funding": "https://github.com/sponsors/NacreousDawn596",
   "license": "MIT",
   "bin": "bin.mjs",
   "type": "module",
@@ -36,7 +36,7 @@
     "mod-loader",
     "enhancer",
     "notion",
-    "notion-enhancer"
+    "notion-enhanced"
   ],
   "dependencies": {
     "@electron/asar": "^3.2.9",
